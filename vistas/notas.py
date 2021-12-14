@@ -27,3 +27,9 @@ btn.pack() #posicionamiento relativo
 
 
 ventana.mainloop()
+
+#GRID
+#componente.grid(row= , column= , rowspan= , columnspan= , sticky= ) ----- sticky puede ser n s w e para indicar la posicion que va a tomar
+#los paddings y margenes funcionan igual
+#componente.columnconfigure(0, weight=1) ---- 0 es el numero de la columna, weight el peso de la columna en todo el conjunto
+#componente.rowconfigure()
