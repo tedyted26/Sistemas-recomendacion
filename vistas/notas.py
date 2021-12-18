@@ -1,35 +1,73 @@
-import tkinter
-# con la extension de archivo .pyw el archivo se ejecuta haciendo doble click
-def mensaje():
-    print("Mensaje del boton")
+import tkinter as tk                # python 3
 
-ventana = tkinter.Tk()
-ventana.geometry("400x280")
-ventana.title("Recomendador")
+class Recomendador(tk.Tk):
 
-lbl = tkinter.Label(ventana, text="Hola")
-lbl.place(x=60, y=40, width=100, height=30) #valores absolutos
-#valores relativos al padre, valores entre 0 y 1, proporción respecto al padre
-#0.1 = 10% del padre
-#lbl.place(relx=0.1, rely=0.1, relwidth=0.5, relheight=0.5)
+    def __init__(self, *args, **kwargs):
+        tk.Tk.__init__(self, *args, **kwargs)
 
-btn = tkinter.Button(ventana, text = "Boton", command=mensaje)
-btn.pack() #posicionamiento relativo
-#en vez de especificar las coordenadas, se especifica si el elemento va
-#arriba abajo a la izquierda o a la derecha con respecto al contenedor
-#si no se indica ningun argumento, pack los posiciona uno encima del otro
-#la propiedad side controla la posicion
-#side.TOP side.BOTTOM side.LEFT, side.RIGHT
-#admite after y before: .pack(before=otroelemento)
-#admite padx (margen x), pady (margen y), ipadx (padding x), ipady (padding y) en valores absolutos
-#admite expand=True/False para especificar si cambia el tamaño con la ventana
-#admite fill=tk.BOTH/tk.X/tk.Y hacia que lado debe expandirse
+        self.title = "Recomendador"
+        container = tk.Frame(self)
+        container.place(relx=0, rely=0, relheight=1, relwidth=1)
+
+        self.frames = {}
+        for F in (StartPage, PageOne, PageTwo):
+            page_name = F.__name__
+            frame = F(parent=container, controller=self)
+            self.frames[page_name] = frame
+
+            # put all of the pages in the same location;
+            # the one on the top of the stacking order
+            # will be the one that is visible.
+            frame.grid(row=0, column=0, sticky="nsew")
+
+        self.show_frame("StartPage")
+
+    def show_frame(self, page_name):
+        '''Show a frame for the given page name'''
+        frame = self.frames[page_name]
+        frame.tkraise()
 
 
-ventana.mainloop()
+class StartPage(tk.Frame):
 
-#GRID
-#componente.grid(row= , column= , rowspan= , columnspan= , sticky= ) ----- sticky puede ser n s w e para indicar la posicion que va a tomar
-#los paddings y margenes funcionan igual
-#componente.columnconfigure(0, weight=1) ---- 0 es el numero de la columna, weight el peso de la columna en todo el conjunto
-#componente.rowconfigure()
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        label = tk.Label(self, text="This is the start page")
+        label.pack(side="top", fill="x", pady=10)
+
+        button1 = tk.Button(self, text="Go to Page One",
+                            command=lambda: controller.show_frame("PageOne"))
+        button2 = tk.Button(self, text="Go to Page Two",
+                            command=lambda: controller.show_frame("PageTwo"))
+        button1.pack()
+        button2.pack()
+
+
+class PageOne(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        label = tk.Label(self, text="This is page 1")
+        label.pack(side="top", fill="x", pady=10)
+        button = tk.Button(self, text="Go to the start page",
+                           command=lambda: controller.show_frame("StartPage"))
+        button.pack()
+
+
+class PageTwo(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        label = tk.Label(self, text="This is page 2")
+        label.pack(side="top", fill="x", pady=10)
+        button = tk.Button(self, text="Go to the start page",
+                           command=lambda: controller.show_frame("StartPage"))
+        button.pack()
+
+
+if __name__ == "__main__":
+    app = Recomendador()
+    app.mainloop()
