@@ -2,6 +2,7 @@ from tkinter import *
 from menu import Menu_frame
 from buscador_texto import Buscador_por_texto_frame
 from buscador import Buscador_frame
+from resultados import Resultados_frame
 
 class Recomendador(Tk):
     def __init__(self, *args, **kwargs):
@@ -30,7 +31,7 @@ class Recomendador(Tk):
         #paginas del programa
         self.frames = {}
 
-        for F in (Menu_frame, Buscador_por_texto_frame, Buscador_frame):
+        for F in (Menu_frame, Buscador_por_texto_frame, Buscador_frame, Resultados_frame):
             page_name = F.__name__
             frame = F(parent=container)
             self.frames[page_name] = frame
