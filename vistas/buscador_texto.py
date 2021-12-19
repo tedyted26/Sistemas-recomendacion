@@ -35,6 +35,7 @@ class Buscador_por_texto_frame(Frame):
 
     def volver(self, pagina):
         self.controller.show_frame(pagina)
+        self.borrar_contenido()
     
     def boton_buscar(self):        
         self.buscar()

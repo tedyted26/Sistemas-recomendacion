@@ -19,14 +19,16 @@ class Menu_frame(Frame):
         self.intro = Label(self, text="¿Cómo deseas buscar la noticia?")
         self.intro.place(relx=0, rely=0.5, relwidth=1)
 
-        self.texto = Button(self, text="Búsqueda por texto", command=partial(self.cambiar, "Buscador_por_texto_frame"))
+        self.texto = Button(self, text="Búsqueda por texto", command=partial(self.cambiar, "Buscador_por_texto_frame", False))
         self.texto.place(relx=0.05, rely=0.6, relwidth=0.25)
 
-        self.similares = Button(self, text="Búsqueda por noticias similares", command=partial(self.cambiar, "Buscador_frame"))
+        self.similares = Button(self, text="Búsqueda por noticias similares", command=partial(self.cambiar, "Buscador_frame", False))
         self.similares.place(relx=0.375, rely=0.6, relwidth=0.25)
 
-        self.recomendadas = Button(self, text="Búsqueda por noticias recomendadas", command=partial(self.cambiar, "Buscador_frame"))
+        self.recomendadas = Button(self, text="Búsqueda por noticias recomendadas", command=partial(self.cambiar, "Buscador_frame", True))
         self.recomendadas.place(relx=0.7, rely=0.6, relwidth=0.25)
 
-    def cambiar(self, pagina):
+    def cambiar(self, pagina, filtros):
         self.controller.show_frame(pagina)
+        if pagina=="Buscador_frame": 
+            self.controller.frames[pagina].set_con_filtros(filtros)
