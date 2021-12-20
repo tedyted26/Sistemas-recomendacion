@@ -1,6 +1,6 @@
 WhatsApp introduce novedades en los mensajes temporales####
 WhatsApp ha anunciado novedades dentro de los mensajes temporales: se pueden establecer chats completos con esta configuración o gestionar el tiempo que estos permanecen guardados ####
-2021-12-06T15:18:20Z####
+2021-12-06 15:18:20####
 https://www.elmundo.es/tecnologia/trucos/2021/12/06/61ae29b5fc6c83c1448b45a7.html####
 Tecnologia####
 El Mundo####

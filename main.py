@@ -3,15 +3,10 @@ from urllib import request as rq
 import datetime as dt
 import ssl
 
+import re
+
 import os
 from pathlib import Path
-
-#pip install -U spacy
-#python -m spacy download es
-import spacy 
-#pip install --user -U nltk
-import nltk
-from nltk import SnowballStemmer
 
 from Noticia import Noticia
 
@@ -58,35 +53,64 @@ def getElPaisNews(mainUrl, categoria):
         link = "https://elpais.com" + a.find("a")["href"]
         listaLinks.append(link)
     print(listaLinks)
-    #return listaNoticias
+    for link in listaLinks:
+        n = None
+        try:
+            url = link
+            htmlTemp = rq.urlopen(url, context=ssl.SSLContext()).read()
+            soupPag = BeautifulSoup(htmlTemp, 'html.parser')
+
+            titulo = soupPag.find(class_="a_t").text
+            subtitulo = soupPag.find(class_="a_st").text
+            fecha = soupPag.find(id="article_date_p")["data-date"]
+            #Texto
+            divCentral = soupPag.find("div", class_="a_c")
+            parrafos = divCentral.findAll("p", class_="")
+            textoNoticia = ""
+            for p in parrafos:
+                textoNoticia += " "+ p.text
+            #Tags
+            tags = [li.text for li in soupPag.find("ul", class_="_df _ls").findAll("li")]
+
+            n = Noticia(titulo, subtitulo, fecha, url, categoria, "El Pais", tags, textoNoticia)
+        except Exception as e:
+            print(e)
+        if n is not None:
+            listaNoticias.append(n)
+
+    return listaNoticias
 
 def guardarNoticias(listaN: list, ruta):
     for i,n in enumerate(listaN):
-        fecha = dt.datetime.strptime(n.fecha, '%Y-%m-%dT%H:%M:%SZ')
-        nombreArchivo = f"{n.categoria}.{fecha.year}-{fecha.month}-{fecha.day}.{i}.txt"
-        print(nombreArchivo)
+        try:
+            date_regEx = re.compile(r'(\d+-\d+-\d+T\d*:\d*:\d*)')
+            fecha = dt.datetime.strptime(date_regEx.search(n.fecha).group(), '%Y-%m-%dT%H:%M:%S')
+            nombreArchivo = f"{n.categoria}.{fecha.year}-{fecha.month}-{fecha.day}.{i}.txt"
+            print(nombreArchivo)
 
-        s = "####"
-        texto = f"{n.titulo}{s}\n" \
-                f"{n.subtitulo}{s}\n" \
-                f"{n.fecha}{s}\n" \
-                f"{n.url}{s}\n" \
-                f"{n.categoria}{s}\n" \
-                f"{n.periodico}{s}\n" \
-                f"{n.tags}{s}\n" \
-                f"{n.texto}{s}\n" \
-            # Path(ruta).mkdir(parents=True, exist_ok=True)
-        cd = os.getcwd() + "/"+n.periodico
+            s = "####"
+            texto = f"{n.titulo}{s}\n" \
+                    f"{n.subtitulo}{s}\n" \
+                    f"{fecha}{s}\n" \
+                    f"{n.url}{s}\n" \
+                    f"{n.categoria}{s}\n" \
+                    f"{n.periodico}{s}\n" \
+                    f"{n.tags}{s}\n" \
+                    f"{n.texto}{s}\n" \
+                # Path(ruta).mkdir(parents=True, exist_ok=True)
+            cd = os.getcwd() + "/"+n.periodico
 
-        if not os.path.exists(cd):
-            os.mkdir(cd)
-        cd2 = cd + ruta
+            if not os.path.exists(cd):
+                os.mkdir(cd)
+            cd2 = cd + ruta
 
-        if not os.path.exists(cd2):
-            os.mkdir(cd2)
-        f = open(os.path.join(cd2, nombreArchivo), "w")
-        f.write(texto)
-        f.close()
+            if not os.path.exists(cd2):
+                os.mkdir(cd2)
+            f = open(os.path.join(cd2, nombreArchivo), "w")
+            f.write(texto)
+            f.close()
+        except Exception as e:
+            print(e)
 
 def elMundo():
     saludElmundo = getElMundoNews("https://www.elmundo.es/ciencia-y-salud/salud.html", "Salud")
@@ -95,57 +119,15 @@ def elMundo():
     cienciaElmundo = getElMundoNews("https://www.elmundo.es/ciencia-y-salud/ciencia.html", "Ciencia")
     guardarNoticias(tecnologElmundo, "/Tecnologia/")
     guardarNoticias(cienciaElmundo, "/Ciencia/")
-
-def tokenizacion(rutaFichero):
-    nlp = spacy.load('es_core_news_sm')
-    
-    f = open (rutaFichero,'r')
-    texto = f.read() 
-
-    doc = nlp(texto) # Crea un objeto de spacy tipo nlp
-    tokens = [t.orth_ for t in doc] # Crea una lista con las palabras del texto
-    tokens.sort()
-    return tokens
-
-def tratamientoBasico(tokens):
-    caracteres = "0123456789ºª!·$%&/()=|@#~€¬'?¡¿`+^*[]´¨}{,.-;:_<>\n \""
-    listaTratada = []
-    for token in tokens :
-        for i in range (len(caracteres)):
-            token = token.replace(caracteres[i],"")
-        if(token != ""):
-            listaTratada.append(token.lower())
-    tokens.sort()
-    return listaTratada
-
-def listaParada(tokens):
-    listaParada = tratamientoBasico(tokenizacion("lista1.txt"))
-    listaDepurada = []
-    for token in tokens:
-        encontrado = False
-        i=0
-        while (encontrado==False and i<len(listaParada)):
-            if (token==listaParada[i]):
-                encontrado=True
-            i+=1
-        if encontrado==False and len(token)>2:
-            listaDepurada.append(token)
-    return listaDepurada
-
-def stemming(tokens):
-    spanishstemmer=SnowballStemmer('spanish')
-    stems = [spanishstemmer.stem(token) for token in tokens]
-    print(stems)
-    return stems
+def elPais():
+    sanidadElPais = getElPaisNews("https://elpais.com/noticias/sanidad/", "Sanidad")
+    guardarNoticias(sanidadElPais, "/Sanidad/")
+    tecnologiaElPais = getElPaisNews("https://elpais.com/tecnologia/", "Tecnologia")
+    guardarNoticias(tecnologiaElPais, "/Tecnologia/")
+    cienciaElPais = getElPaisNews("https://elpais.com/ciencia/", "Ciencia")
+    guardarNoticias(cienciaElPais, "/Ciencia/")
 
 
-saludElmundo= getElMundoNews("https://www.elmundo.es/ciencia-y-salud/salud.html", "Salud")
-# tecnologElmundo = getElMundoNews("https://www.elmundo.es/tecnologia.html", "Tecnologia")
-# cienciaElmundo = getElMundoNews("https://www.elmundo.es/ciencia-y-salud/ciencia.html", "Ciencia")
-tokens = tokenizacion("El Mundo/Salud/Salud.2021-12-18.16.txt")
-tokens = tratamientoBasico(tokens)
-tokens = listaParada(tokens)
-tokens = stemming(tokens)
-#guardarNoticias(saludElmundo, "/Salud/")
-#getElPaisNews("https://elpais.com/noticias/sanidad/","Sanidad")
+
+# elMundo()
 

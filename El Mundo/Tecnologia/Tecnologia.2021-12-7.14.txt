@@ -1,6 +1,6 @@
 Prime, Ring y otras aplicaciones de Amazon dejan de funcionar para miles de usuarios####
 Amazon afirma que la interrupción que ha afectado a clientes de Estados Unidos probablemente se debió a problemas en la interfaz de programación de aplicaciones####
-2021-12-07T19:24:02Z####
+2021-12-07 19:24:02####
 https://www.elmundo.es/tecnologia/2021/12/07/61afb4cde4d4d8110c8b458d.html####
 Tecnologia####
 El Mundo####

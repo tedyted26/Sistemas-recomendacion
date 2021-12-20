@@ -1,6 +1,6 @@
 La nueva herramienta de Google para evitar las aglomeraciones estas Navidades####
 Permite avisar a los usuarios sobre los barrios o zonas de una ciudad que se encuentran en su momento más concurrido####
-2021-12-13T10:10:24Z####
+2021-12-13 10:10:24####
 https://www.elmundo.es/tecnologia/gadgets/2021/12/13/61b71c0be4d4d87d4c8b459c.html####
 Tecnologia####
 El Mundo####

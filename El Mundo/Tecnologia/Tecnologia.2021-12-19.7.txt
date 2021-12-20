@@ -1,6 +1,6 @@
 Log4Shell, el "fallo del siglo" que ha puesto a Internet de rodillas####
 El fallo es especialmente preocupante por la facilidad con la que permite ejecutar código no autorizado en el sistema atacado####
-2021-12-19T01:22:48Z####
+2021-12-19 01:22:48####
 https://www.elmundo.es/tecnologia/2021/12/19/61ba0ada21efa08f278b45f0.html####
 Tecnologia####
 El Mundo####
