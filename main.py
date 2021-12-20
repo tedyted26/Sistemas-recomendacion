@@ -5,6 +5,9 @@ import datetime as dt
 import os
 from pathlib import Path
 
+#pip install -U spacy
+import spacy 
+
 from Noticia import Noticia
 
 def getElMundoNews(mainUrl, categoria):
@@ -52,8 +55,16 @@ def guardarNoticias(listaN: list, ruta):
         f.write("Now the file has more content!")
         f.close()
 
+def tokenizacion(rutaFichero):
+    #python -m spacy download es
+    nlp = spacy.load('es_core_news_sm')
+    f = open (rutaFichero,'r')
+    mensaje = f.read()  
+    print(mensaje)
+            
+
 saludElmundo= getElMundoNews("https://www.elmundo.es/ciencia-y-salud/salud.html", "Salud")
 # tecnologElmundo = getElMundoNews("https://www.elmundo.es/tecnologia.html", "Tecnologia")
 # cienciaElmundo = getElMundoNews("https://www.elmundo.es/ciencia-y-salud/ciencia.html", "Ciencia")
-
+tokenizacion("D:/Users/Mario/Desktop/uwu.txt")
 guardarNoticias(saludElmundo, "/Salud/")
