@@ -37,11 +37,13 @@ class Buscador_por_texto_frame(Frame):
         self.controller.show_frame(pagina)
         self.borrar_contenido()
     
-    def boton_buscar(self):        
+    def boton_buscar(self): 
+        texto_buscado = self.input_buscador.get()       
         self.buscar()
         self.controller.show_frame("Resultados_frame")
         self.controller.frames["Resultados_frame"].rellenar(False)
         self.controller.frames["Resultados_frame"].set_origin("Buscador_por_texto_frame")
+        self.controller.frames["Resultados_frame"].set_titulo_noticia(texto_buscado)
         self.borrar_contenido()
 
     def borrar_contenido(self):
@@ -49,4 +51,4 @@ class Buscador_por_texto_frame(Frame):
 
     def buscar(self):
         #TODO aqui va la funcion de buscar
-        texto = self.input_buscador.get()
+        print("Buscando")

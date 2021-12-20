@@ -94,12 +94,16 @@ class Buscador_frame(Frame):
         print("rellenar")
 
     def boton_buscar(self):
+        #hay que recoger antes la noticia seleccionada de los widgets
+        titulo_noticia = "Titulo Noticia"
         self.buscar()
+        #configuración del frame de resultados
         self.controller.show_frame("Resultados_frame")
         self.controller.frames["Resultados_frame"].rellenar(self.filtros)
         self.controller.frames["Resultados_frame"].set_origin("Buscador_frame")
+        self.controller.frames["Resultados_frame"].set_titulo_noticia(titulo_noticia)
         self.borrar_contenido()
     
     def buscar(self):
-        #TODO funcion de buscar
+        #TODO funcion de buscar (calculos y mierdas)
         print("Buscando")
