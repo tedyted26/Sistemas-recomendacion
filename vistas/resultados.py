@@ -50,7 +50,17 @@ class Resultados_frame(Frame):
         self.label_previsualizacion = Label(self.frame_contenido, text="Previsualización")
         self.label_previsualizacion.place(relx=0.41, rely= 0.11)
 
-        self.lista_noticias = Text(self.frame_contenido)
+        self.lista_noticias = ttk.Treeview(self.frame_contenido, column=("pos", "tit", "por"), show='headings', height=5)
+
+        self.lista_noticias.column('#0', width=0, stretch=NO)
+        self.lista_noticias.column('pos', width=1, anchor=E)
+        self.lista_noticias.column('tit', width=150, anchor=W)
+        self.lista_noticias.column('por', width=1, anchor=CENTER)
+
+        self.lista_noticias.heading("pos", text="Posición", anchor=CENTER)
+        self.lista_noticias.heading("tit", text="Título", anchor=W)   
+        self.lista_noticias.heading("por", text="%", anchor=CENTER)
+
         self.lista_noticias.place(relx=0.05, rely= 0.15, relheight=0.8, relwidth=0.32)
 
         sb = Scrollbar(self.frame_contenido)

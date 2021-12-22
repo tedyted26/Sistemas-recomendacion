@@ -69,8 +69,7 @@ class Buscador_frame(Frame):
         self.label_previsualizacion = Label(self.frame_contenido, text="Previsualización")
         self.label_previsualizacion.place(relx=0.41, rely= 0.11)
 
-        #TODO
-        self.lista_noticias = Text(self.frame_contenido)
+        self.lista_noticias = Listbox(self.frame_contenido)
         self.lista_noticias.place(relx=0.05, rely= 0.15, relheight=0.8, relwidth=0.32)
 
         sb = Scrollbar(self.frame_contenido)
