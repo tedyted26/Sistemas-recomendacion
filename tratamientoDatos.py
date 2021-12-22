@@ -4,7 +4,8 @@ import spacy
 #pip install --user -U nltk
 import nltk
 from nltk import SnowballStemmer
-
+import os
+from pathlib import Path
 
 def tokenizacion(rutaFichero):
     nlp = spacy.load('es_core_news_sm')
@@ -14,7 +15,6 @@ def tokenizacion(rutaFichero):
 
     doc = nlp(texto) # Crea un objeto de spacy tipo nlp
     tokens = [t.orth_ for t in doc] # Crea una lista con las palabras del texto
-    tokens.sort()
     return tokens
 
 def tratamientoBasico(tokens):
@@ -25,7 +25,6 @@ def tratamientoBasico(tokens):
             token = token.replace(caracteres[i],"")
         if(token != ""):
             listaTratada.append(token.lower())
-    tokens.sort()
     return listaTratada
 
 def listaParada(tokens):
@@ -46,3 +45,33 @@ def stemming(tokens):
     spanishstemmer=SnowballStemmer('spanish')
     stems = [spanishstemmer.stem(token) for token in tokens]
     return stems
+
+def listaVocabulario():
+    listaFicheros = ["/El Mundo/Ciencia/","/El Mundo/Salud/","/El Mundo/Tecnologia/","/El Pais/Ciencia/","/El Pais/Sanidad/","/El Pais/Tecnologia/"]
+    listaPalabras = []
+    for carpeta in listaFicheros:
+        ruta = os.getcwd() + carpeta
+        noticias = os.listdir(ruta)
+        for noticia in noticias:
+            tokens = tokenizacion(ruta+noticia)
+            tokens = tratamientoBasico(tokens)
+            tokens = listaParada(tokens)
+            tokens = stemming(tokens)
+
+        for token in tokens:
+            encontrado = False
+            i = 0
+            while (encontrado==False and i < len(listaPalabras) ):
+                if token == listaPalabras[i]:
+                    encontrado = True
+                i+=1
+            if encontrado==False:
+                listaPalabras.append(token)
+    return listaPalabras
+
+lista = listaVocabulario()
+print(lista)
+f = open("lista.txt", "w")
+for elemento in lista:
+    f.write(elemento+"\n")
+f.close()
