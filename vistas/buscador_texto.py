@@ -1,5 +1,6 @@
 from tkinter import *
 from functools import partial
+from tkinter import ttk
 
 class Buscador_por_texto_frame(Frame):
     def __init__(self, parent):
@@ -30,24 +31,48 @@ class Buscador_por_texto_frame(Frame):
         self.input_buscador = Entry(self.frame_buscador)
         self.input_buscador.place(relx=0.3, rely=0.4, relwidth=0.4)
 
+        periodicos = ["El Mundo", "El País", "20 Minutos"]
+        top = [3, 5, 10]
+
+        self.label_periodicos = Label(self.frame_buscador, text="Periódico:")
+        self.label_periodicos.place(relx=0.3, rely=0.5)
+
+        self.periodicos_combobox = ttk.Combobox(self.frame_buscador, values=periodicos, state="readonly")
+        self.periodicos_combobox.current(0)
+        self.periodicos_combobox.place(relx=0.37, rely= 0.5, relwidth=0.2)
+
+        self.label_top = Label(self.frame_buscador, text="Top:")
+        self.label_top.place(relx=0.61, rely=0.5)
+
+        self.top_combobox = ttk.Combobox(self.frame_buscador, values=top, state="readonly")
+        self.top_combobox.current(0)
+        self.top_combobox.place(relx=0.65, rely= 0.5, relwidth=0.05)
+
         self.boton_buscar = Button(self.frame_buscador, text="Buscar", command=self.boton_buscar)
-        self.boton_buscar.place(relx=0.45, rely=0.5, relwidth=0.1)
+        self.boton_buscar.place(relx=0.45, rely=0.6, relwidth=0.1)
+
+        self.label_error = Label(self.frame_buscador, text="No puede dejar el campo de texto vacío", fg="red")
 
     def volver(self, pagina):
         self.controller.show_frame(pagina)
         self.borrar_contenido()
     
     def boton_buscar(self): 
-        texto_buscado = self.input_buscador.get()       
-        self.buscar()
-        self.controller.show_frame("Resultados_frame")
-        self.controller.frames["Resultados_frame"].rellenar(False)
-        self.controller.frames["Resultados_frame"].set_origin("Buscador_por_texto_frame")
-        self.controller.frames["Resultados_frame"].set_titulo_noticia(texto_buscado)
-        self.borrar_contenido()
+        texto_buscado = self.input_buscador.get()
+        if texto_buscado=="":
+            self.label_error.place(relx=0, rely=0.7, relwidth=1) 
+        else:      
+            self.buscar()
+            self.controller.show_frame("Resultados_frame")
+            self.controller.frames["Resultados_frame"].rellenar(False)
+            self.controller.frames["Resultados_frame"].set_origin("Buscador_por_texto_frame")
+            self.controller.frames["Resultados_frame"].set_titulo_noticia(texto_buscado)
+            self.borrar_contenido()
 
     def borrar_contenido(self):
         self.input_buscador.delete(0,"end")
+        if self.label_error.winfo_ismapped:
+           self.label_error.place_forget()
 
     def buscar(self):
         #TODO aqui va la funcion de buscar

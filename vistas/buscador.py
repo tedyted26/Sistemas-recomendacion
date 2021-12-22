@@ -14,12 +14,11 @@ class Buscador_frame(Frame):
     def set_con_filtros(self, filtros=False):
         self.filtros = filtros
         if self.filtros:    #dependiendo de si se utilizará para una cosa u otra se pone un titulo u otro
-            self.titulo_ventana.config(text="Buscador de noticias recomendadas")
+            self.titulo_ventana.config(text="Buscador de noticias similares por etiquetas")
             
         else:
-            self.titulo_ventana.config(text="Buscador de noticias similares")
-
-        
+            self.titulo_ventana.config(text="Buscador de noticias recomendadas por contenido")
+       
 
     def create_widgets(self):
         #frame superior con volver y título
@@ -38,6 +37,7 @@ class Buscador_frame(Frame):
 
         periodicos = ["El Mundo", "El País", "20 Minutos"]
         categorias = ["Salud/Sanidad", "Tecnología", "Ciencia"]
+        top = [3, 5, 10]
 
         self.label_periodicos = Label(self.frame_contenido, text="Periódico:")
         self.label_periodicos.place(relx=0.05, rely=0.055)
@@ -53,6 +53,13 @@ class Buscador_frame(Frame):
         self.categorias_combobox.current(0)
         self.categorias_combobox.place(relx=0.42, rely= 0.055, relwidth=0.2)
 
+        self.label_top = Label(self.frame_contenido, text="Top:")
+        self.label_top.place(relx=0.65, rely=0.055)
+
+        self.top_combobox = ttk.Combobox(self.frame_contenido, values=top, state="readonly")
+        self.top_combobox.current(0)
+        self.top_combobox.place(relx=0.69, rely= 0.055, relwidth=0.05)
+
         self.boton_resultados = Button(self.frame_contenido, text="Buscar", command=self.boton_buscar)
         self.boton_resultados.place(relx=0.85, rely= 0.05, relwidth=0.1)
 
@@ -62,6 +69,7 @@ class Buscador_frame(Frame):
         self.label_previsualizacion = Label(self.frame_contenido, text="Previsualización")
         self.label_previsualizacion.place(relx=0.41, rely= 0.11)
 
+        #TODO
         self.lista_noticias = Text(self.frame_contenido)
         self.lista_noticias.place(relx=0.05, rely= 0.15, relheight=0.8, relwidth=0.32)
 
@@ -71,7 +79,7 @@ class Buscador_frame(Frame):
         self.lista_noticias.config(yscrollcommand=sb.set)
         sb.config(command=self.lista_noticias.yview)
 
-        self.vista_noticias = Text(self.frame_contenido, wrap='word')
+        self.vista_noticias = Text(self.frame_contenido, wrap='word', state="disabled")
         self.vista_noticias.place(relx=0.41, rely= 0.15, relheight=0.8, relwidth=0.52)
 
         sb_2 = Scrollbar(self.frame_contenido)

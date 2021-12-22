@@ -36,7 +36,6 @@ class Resultados_frame(Frame):
         self.frame_contenido.place(relx=0, rely= 0.05, relheight=0.95, relwidth=1)
 
         periodicos = ["El Mundo", "El País", "20 Minutos"]
-        top = ["Top 3", "Top 5", "Top 10"]
 
         self.label_periodicos = Label(self.frame_contenido, text="Periódico:")
         self.label_periodicos.place(relx=0.05, rely=0.055)
@@ -44,13 +43,6 @@ class Resultados_frame(Frame):
         self.periodicos_combobox = ttk.Combobox(self.frame_contenido, values=periodicos, state="readonly")
         self.periodicos_combobox.current(0)
         self.periodicos_combobox.place(relx=0.12, rely= 0.055, relwidth=0.2)
-
-        self.label_top = Label(self.frame_contenido, text="Filtrar por:")
-        self.label_top.place(relx=0.35, rely=0.055)
-
-        self.top_combobox = ttk.Combobox(self.frame_contenido, values=top, state="readonly")
-        self.top_combobox.current(0)
-        self.top_combobox.place(relx=0.42, rely= 0.055, relwidth=0.2)
 
         self.label_ranking = Label(self.frame_contenido, text="Ranking")
         self.label_ranking.place(relx=0.05, rely= 0.11)
@@ -67,7 +59,7 @@ class Resultados_frame(Frame):
         self.lista_noticias.config(yscrollcommand=sb.set)
         sb.config(command=self.lista_noticias.yview)
 
-        self.vista_noticias = Text(self.frame_contenido, wrap='word')
+        self.vista_noticias = Text(self.frame_contenido, wrap='word', state="disabled")
         self.vista_noticias.place(relx=0.41, rely= 0.15, relheight=0.8, relwidth=0.52)
 
         sb_2 = Scrollbar(self.frame_contenido)
@@ -104,9 +96,21 @@ class Resultados_frame(Frame):
         self.label_filtros_destino = Label(self.frame_filtros, text="Filtros destino")
         self.label_filtros_destino.place(relx=0.41, rely= 0)
 
-        self.lista_filtros_origen = Text(self.frame_filtros, wrap='word')
+        self.lista_filtros_origen = Text(self.frame_filtros, wrap='word', state="disabled")
         self.lista_filtros_origen.place(relx=0.05, rely= 0.2, relheight=0.5, relwidth=0.32)
 
-        self.lista_filtros_destino = Text(self.frame_filtros, wrap='word')
+        sb_3 = Scrollbar(self.frame_filtros)
+        sb_3.place(relx=0.37, rely= 0.2, relheight=0.5, relwidth=0.02)
+
+        self.lista_filtros_origen.config(yscrollcommand=sb_3.set)
+        sb_3.config(command=self.lista_filtros_origen.yview)
+
+        self.lista_filtros_destino = Text(self.frame_filtros, wrap='word', state="disabled")
         self.lista_filtros_destino.place(relx=0.41, rely= 0.2, relheight=0.5, relwidth=0.52)
+
+        sb_4 = Scrollbar(self.frame_filtros)
+        sb_4.place(relx=0.93, rely= 0.2, relheight=0.5, relwidth=0.02)
+
+        self.lista_filtros_destino.config(yscrollcommand=sb_4.set)
+        sb_4.config(command=self.lista_filtros_destino.yview)
 
