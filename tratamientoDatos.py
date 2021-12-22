@@ -7,11 +7,32 @@ from nltk import SnowballStemmer
 import os
 from pathlib import Path
 
+from Noticia import Noticia
+
+#Variables globales
+listaPeriodicos = ["/El Mundo/","/El Pais/"]
+rutaListaParada = "listaParada.txt"
+rutaDiccionario = "diccionario.txt"
+rutaFicherosTratados = "ficherosLeidos.txt"
+
+#Metodo de lectura de noticia
+def leerNoticia(rutaFichero):
+    print(rutaFichero)
+    f = open (rutaFichero,'r')
+    texto = f.read()
+    listaTexto = texto.split(sep="####")
+    noticia = Noticia(listaTexto[0],listaTexto[1],listaTexto[2],listaTexto[3],listaTexto[4],listaTexto[6],listaTexto[6],listaTexto[7])
+    return noticia
+
+#Metodos de Tratamiento de ficheros
 def tokenizacion(rutaFichero):
     nlp = spacy.load('es_core_news_sm')
     
-    f = open (rutaFichero,'r')
-    texto = f.read() 
+    if rutaFichero==rutaListaParada:
+        f = open (rutaFichero,'r')
+        texto = f.read() 
+    else:
+        texto = leerNoticia(rutaFichero).getTexto()
 
     doc = nlp(texto) # Crea un objeto de spacy tipo nlp
     tokens = [t.orth_ for t in doc] # Crea una lista con las palabras del texto
@@ -28,7 +49,7 @@ def tratamientoBasico(tokens):
     return listaTratada
 
 def listaParada(tokens):
-    listaParada = tratamientoBasico(tokenizacion("lista1.txt"))
+    listaParada = tratamientoBasico(tokenizacion(rutaListaParada))
     listaDepurada = []
     for token in tokens:
         encontrado = False
@@ -46,32 +67,59 @@ def stemming(tokens):
     stems = [spanishstemmer.stem(token) for token in tokens]
     return stems
 
-def listaVocabulario():
-    listaFicheros = ["/El Mundo/Ciencia/","/El Mundo/Salud/","/El Mundo/Tecnologia/","/El Pais/Ciencia/","/El Pais/Sanidad/","/El Pais/Tecnologia/"]
-    listaPalabras = []
-    for carpeta in listaFicheros:
-        ruta = os.getcwd() + carpeta
-        noticias = os.listdir(ruta)
-        for noticia in noticias:
-            tokens = tokenizacion(ruta+noticia)
-            tokens = tratamientoBasico(tokens)
-            tokens = listaParada(tokens)
-            tokens = stemming(tokens)
+#Metodo para generar el diccionario
+def generarDiccionario():
+    diccionario = []
+    ficherosTratados = []
+    if os.path.isfile(rutaDiccionario): #Compruebo si existe el fichero
+        diccionario = tratamientoBasico(tokenizacion(rutaDiccionario))
+    if os.path.isfile(rutaFicherosTratados): #Compruebo si existe el fichero
+        ficherosTratados = tratamientoBasico(tokenizacion(rutaFicherosTratados))
 
-        for token in tokens:
-            encontrado = False
-            i = 0
-            while (encontrado==False and i < len(listaPalabras) ):
-                if token == listaPalabras[i]:
-                    encontrado = True
-                i+=1
-            if encontrado==False:
-                listaPalabras.append(token)
-    return listaPalabras
+    #Recorro todos los periodicos
+    for periodico in listaPeriodicos:
+        rutaPeriodico = os.getcwd() + periodico
+        listaTemas = os.listdir(rutaPeriodico)
+        #Recorro todos los temas de cada periodico
+        for tema in listaTemas:
+            rutaTema = rutaPeriodico + tema + "/"
+            noticias = os.listdir(rutaTema)
+            #Recorro todas las noticias de cada tema
+            for noticia in noticias:
+                #Compruebo si la noticia no la había tratado ya
+                noticiaActual = periodico + tema + "/" + noticia
+                if noticiaActual not in ficherosTratados:
+                    #Tratamiento de la noticia
+                    tokens = tokenizacion(rutaTema+noticia)
+                    tokens = tratamientoBasico(tokens)
+                    tokens = listaParada(tokens)
+                    tokens = stemming(tokens)
+                    #Compruebo si existe el token en la lista
+                    for token in tokens:
+                        if token not in diccionario:
+                            diccionario.append(token)
+                    #Guardo la noticia en los ficheros tratados para no volver a analizarlo           
+                    ficherosTratados.append(noticiaActual)
+                
+    #Guardo en ficheros el diccionaro y las noticias tratadas
+    #Diccionario
+    f = open(rutaDiccionario, "w")
+    for elemento in diccionario:
+        f.write(elemento+"\n")
+    f.close()
 
-lista = listaVocabulario()
-print(lista)
-f = open("lista.txt", "w")
-for elemento in lista:
-    f.write(elemento+"\n")
-f.close()
+    #Noticias tratadas
+    f = open(rutaFicherosTratados, "w")
+    for elemento in ficherosTratados:
+        f.write(elemento+"\n")
+    f.close()
+
+    return diccionario
+
+def matriz():
+    diccionario = tratamientoBasico(tokenizacion(rutaDiccionario))
+    listaPeriodicos = ["/El Mundo/","/El Pais/"]
+    print(len(listaPeriodicos))
+
+
+generarDiccionario()

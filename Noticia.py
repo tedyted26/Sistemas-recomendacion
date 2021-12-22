@@ -10,3 +10,6 @@ class Noticia:
         self.periodico = periodico
         self.tags = tags
         self.texto = texto
+
+    def getTexto(self):
+        return self.texto
