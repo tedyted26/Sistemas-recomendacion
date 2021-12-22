@@ -16,3 +16,22 @@ class Noticia:
     
     def getTitulo(self):
         return self.titulo
+
+    def getSubtitulo(self):
+        return self.subtitulo
+
+    def getFecha(self):
+        return self.fecha
+
+    def getUrl(self):
+        return self.url
+
+    def getCategoria(self):
+        return self.categoria
+
+    def getPeriodico(self):
+        return self.periodico
+
+    def getTags(self):
+        return self.tags
+
