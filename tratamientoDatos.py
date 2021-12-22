@@ -6,14 +6,16 @@ import nltk
 from nltk import SnowballStemmer
 import os
 from pathlib import Path
-
 from Noticia import Noticia
+import numpy
+
 
 #Variables globales
 listaPeriodicos = ["/El Mundo/","/El Pais/"]
 rutaListaParada = "listaParada.txt"
 rutaDiccionario = "diccionario.txt"
 rutaFicherosTratados = "ficherosLeidos.txt"
+rutaMatriz = "matriz.txt"
 
 #Metodo de lectura de noticia
 def leerNoticia(rutaFichero):
@@ -28,7 +30,7 @@ def leerNoticia(rutaFichero):
 def tokenizacion(rutaFichero):
     nlp = spacy.load('es_core_news_sm')
     
-    if rutaFichero==rutaListaParada:
+    if rutaFichero==rutaListaParada or rutaFichero==rutaDiccionario:
         f = open (rutaFichero,'r')
         texto = f.read() 
     else:
@@ -74,8 +76,9 @@ def generarDiccionario():
     if os.path.isfile(rutaDiccionario): #Compruebo si existe el fichero
         diccionario = tratamientoBasico(tokenizacion(rutaDiccionario))
     if os.path.isfile(rutaFicherosTratados): #Compruebo si existe el fichero
-        ficherosTratados = tratamientoBasico(tokenizacion(rutaFicherosTratados))
-
+        f = open (rutaFicherosTratados,'r')
+        texto = f.read()
+        ficherosTratados = texto.splitlines()
     #Recorro todos los periodicos
     for periodico in listaPeriodicos:
         rutaPeriodico = os.getcwd() + periodico
@@ -100,7 +103,6 @@ def generarDiccionario():
                             diccionario.append(token)
                     #Guardo la noticia en los ficheros tratados para no volver a analizarlo           
                     ficherosTratados.append(noticiaActual)
-                
     #Guardo en ficheros el diccionaro y las noticias tratadas
     #Diccionario
     f = open(rutaDiccionario, "w")
@@ -113,13 +115,20 @@ def generarDiccionario():
     for elemento in ficherosTratados:
         f.write(elemento+"\n")
     f.close()
-
+    
+    generarMatriz()
     return diccionario
 
-def matriz():
+#Metodo
+def generarMatriz():
     diccionario = tratamientoBasico(tokenizacion(rutaDiccionario))
-    listaPeriodicos = ["/El Mundo/","/El Pais/"]
-    print(len(listaPeriodicos))
+    noticias = tratamientoBasico(tokenizacion(rutaFicherosTratados))
+
+    if os.path.isfile(rutaMatriz): #Compruebo si existe el fichero
+        print("Metodo leer matriz")
+    else:
+        matriz = numpy.zeros(5,3)
 
 
+#Main
 generarDiccionario()

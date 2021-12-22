@@ -6377,7 +6377,8 @@ resuen
 llant
 her
 camill
-pal
+pa
+l
 bolivi
 aymar
 inaccion
@@ -6634,7 +6635,8 @@ envidi
 shakespear
 cervant
 excentr
-improbables”
+improbables
+”
 decameron
 bocacci
 zombis
@@ -6681,7 +6683,8 @@ sof
 gonzalezsind
 entreten
 libert
-”el
+”
+el
 instantane
 prad
 thyssen
