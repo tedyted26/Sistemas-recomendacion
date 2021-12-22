@@ -13,3 +13,6 @@ class Noticia:
 
     def getTexto(self):
         return self.texto
+    
+    def getTitulo(self):
+        return self.titulo
