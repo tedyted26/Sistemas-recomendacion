@@ -1,0 +1,8 @@
+¿Qué son los antígenos?####
+Es cualquier sustancia externa que provoca que el cuerpo produzca inmunidad frente a ellas.¿Qué debe tener un test de antígenos para ser fiable?Qué hacer si eres contacto estrecho de un positivo de covid.####
+2021-12-27 14:52:00####
+https://www.20minutos.es/salud/actualidad/que-son-los-antigenos-4933280/####
+Salud####
+20Minutos####
+['Salud', 'Test de antígenos']####
+ Desde que comenzara la pandemia por la covid, son muchos los términos que se han popularizado en referencia al virus, como es el caso de los antígenos, una palabra de uso ampliamente extendido, sobre todo, desde que se comenzaran a vender en farmacias los test de detección rápida del coronavirus. Así, a nadie le suena ya raro el término 'antígeno', aunque no siempre se sabe con exactitud a qué se refiere dicha palabra. Básicamente, un antígeno es: "Cualquier sustancia que haga que el cuerpo produzca una respuesta inmunitaria contra ella".La respuesta inmune al virusConcretamente, cualquier sustancia que ayude a que el cuerpo produzca inmunidad frente a ella es un antígeno. De hecho, pueden ser toxinas, sustancias químicas, bacterias, virus y otras sustancias provenientes de fuera del cuerpo, como explican desde el Instituto Nacional del Cáncer.Esto significa que el sistema inmunitario del cuerpo, al toparse con esta sustancia externa, no la reconoce y, por tanto, trata de combatirla, tal y como indican desde MedlinePlus, la Biblioteca Nacional de Medicina de los Estados Unidos.Es por ello que estos antígenos se pueden usar como marcadores en pruebas de laboratorio para identificar la presencia de cierta sustancia, como sucede con los test de antígenos de las farmacias, que detectan el virus. ####

@@ -34,6 +34,9 @@ def getElMundoNews(mainUrl, categoria):
             tags = []
             for tag in soupPag.findAll(class_="ue-c-article__tags-item"):
                 tags.append(tag.text)
+
+            date_regEx = re.compile(r'(\d+-\d+-\d+T\d*:\d*:\d*)')
+            fecha = dt.datetime.strptime(date_regEx.search(fecha).group(), '%Y-%m-%dT%H:%M:%S')
             n = Noticia(titulo,subtitulo,fecha, url, categoria,"El Mundo", tags, textoNoticia)
         except Exception as e:
             pass
@@ -72,6 +75,8 @@ def getElPaisNews(mainUrl, categoria):
             #Tags
             tags = [li.text for li in soupPag.find("ul", class_="_df _ls").findAll("li")]
 
+            date_regEx = re.compile(r'(\d+-\d+-\d+T\d*:\d*:\d*)')
+            fecha = dt.datetime.strptime(date_regEx.search(fecha).group(), '%Y-%m-%dT%H:%M:%S')
             n = Noticia(titulo, subtitulo, fecha, url, categoria, "El Pais", tags, textoNoticia)
         except Exception as e:
             print(e)
@@ -80,18 +85,47 @@ def getElPaisNews(mainUrl, categoria):
 
     return listaNoticias
 
+def get20MinutosNews(mainUrl, categoria):
+    html = rq.urlopen(mainUrl, context=ssl.SSLContext()).read()
+    soup = BeautifulSoup(html, 'html.parser')
+
+    listaNoticias = []
+    articulos = soup.findAll("article")
+    listaLinks = []
+    for a in articulos:
+        listaLinks.append(a.find("a")["href"])
+
+    for link in listaLinks:
+        try:
+            url = link
+            htmlTemp = rq.urlopen(url, context=ssl.SSLContext()).read()
+            soupPag = BeautifulSoup(htmlTemp, 'html.parser')
+
+            titulo = soupPag.find("div", class_="title").text
+            subtitulo = soupPag.find("div", class_="article-intro").text
+            fecha = soupPag.find(class_="article-date").text
+            tags = [t.text.strip() for t in soupPag.findAll(class_="tag")]
+            textoTmp = soupPag.find(class_="article-text").text
+            texto = re.sub("\s+", " ", textoTmp)
+
+            date_regEx = re.compile(r'(\d+.\d+.\d+\s*-\s*\d*:\d*)')
+            fecha = dt.datetime.strptime(date_regEx.search(fecha).group(), '%d.%m.%Y - %H:%M')
+
+            n = Noticia(titulo, subtitulo, fecha, url, categoria, "20Minutos", tags, texto)
+            listaNoticias.append(n)
+        except Exception as e:
+            print(e)
+    return listaNoticias
 def guardarNoticias(listaN: list, ruta):
     for i,n in enumerate(listaN):
         try:
-            date_regEx = re.compile(r'(\d+-\d+-\d+T\d*:\d*:\d*)')
-            fecha = dt.datetime.strptime(date_regEx.search(n.fecha).group(), '%Y-%m-%dT%H:%M:%S')
-            nombreArchivo = f"{n.categoria}.{fecha.year}-{fecha.month}-{fecha.day}.{i}.txt"
+            nombreArchivo = f"{n.categoria}.{n.fecha.year}-{n.fecha.month}-{n.fecha.day}.{i}.txt"
             print(nombreArchivo)
 
             s = "####"
             texto = f"{n.titulo}{s}\n" \
                     f"{n.subtitulo}{s}\n" \
-                    f"{fecha}{s}\n" \
+                    f"{n.fecha}{s}\n" \
                     f"{n.url}{s}\n" \
                     f"{n.categoria}{s}\n" \
                     f"{n.periodico}{s}\n" \
@@ -126,8 +160,14 @@ def elPais():
     guardarNoticias(tecnologiaElPais, "/Tecnologia/")
     cienciaElPais = getElPaisNews("https://elpais.com/ciencia/", "Ciencia")
     guardarNoticias(cienciaElPais, "/Ciencia/")
+def el20Minutos():
+    salud20Min = get20MinutosNews("https://www.20minutos.es/salud/", "Salud")
+    guardarNoticias(salud20Min, "/Salud/")
+    tecnologia20Min = get20MinutosNews("https://www.20minutos.es/tecnologia/ ", "Tecnologia")
+    guardarNoticias(tecnologia20Min, "/Tecnologia/")
+
+ciencia20Min = get20MinutosNews("https://www.20minutos.es/ciencia/", "Ciencia")
+guardarNoticias(ciencia20Min, "/Ciencia/")
 
 
-
-# elMundo()
 

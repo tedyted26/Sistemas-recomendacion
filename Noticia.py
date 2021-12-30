@@ -4,11 +4,14 @@ class Noticia:
                  categoria:str,periodico: str, tags:list, texto: str):
         self.titulo = titulo.replace("\n", "")
         self.subtitulo = subtitulo.replace("\n", "")
-        self.fecha = fecha.replace("\n", "")
+        try:
+            self.fecha = fecha.replace("\n", "")
+        except Exception as e:
+            self.fecha = fecha
         self.url = url.replace("\n", "")
         self.categoria = categoria.replace("\n", "")
         self.periodico = periodico.replace("\n", "")
-        self.tags = tags.replace("\n", "")
+        self.tags = tags
         self.texto = texto
 
     def getTexto(self):
