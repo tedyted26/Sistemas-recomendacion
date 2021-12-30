@@ -94,7 +94,7 @@ class Resultados_frame(Frame):
         self.noticia_origen = noticia_origen
         self.filtros = filtros
 
-        #si viene de la página de recomendaciones debe tener los campos de filtros visibles
+        #si viene de la página de similares debe tener los campos de filtros visibles
         if self.filtros:
             self.show_filtros()
             self.lista_filtros_origen['state'] = 'normal'
@@ -104,7 +104,7 @@ class Resultados_frame(Frame):
         else:
             self.frame_contenido.place_configure(relheight=0.95)
             if self.frame_filtros.winfo_ismapped:
-                self.frame_filtros.forget()
+                self.frame_filtros.place_forget()
 
         self.cambiarPeriodico()
 
