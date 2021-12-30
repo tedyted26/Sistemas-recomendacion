@@ -32,10 +32,9 @@ class Buscador_frame(Frame):
     def set_con_filtros(self, filtros=False):
         self.filtros = filtros
         if self.filtros:    #dependiendo de si se utilizará para una cosa u otra se pone un titulo u otro
-            self.titulo_ventana.config(text="Buscador de noticias similares por etiquetas")
-            
+            self.titulo_ventana.config(text="Recomendador por contenido (etiquetas)")          
         else:
-            self.titulo_ventana.config(text="Buscador de noticias recomendadas por contenido")
+            self.titulo_ventana.config(text="Buscador de noticias similares")
        
 
     def create_widgets(self):

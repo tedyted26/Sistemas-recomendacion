@@ -1,9 +1,8 @@
 #pip install -U spacy
 #python -m spacy download es
+from nltk import text
 import spacy 
-#pip install --user -U nltk
-import nltk
-from nltk import SnowballStemmer
+
 import os
 from pathlib import Path
 from Noticia import Noticia
@@ -23,7 +22,7 @@ def leerNoticia(rutaFichero):
     f = open (rutaFichero,'r')
     texto = f.read()
     listaTexto = texto.split(sep="####")
-    noticia = Noticia(listaTexto[0],listaTexto[1],listaTexto[2],listaTexto[3],listaTexto[4],listaTexto[6],listaTexto[6],listaTexto[7])
+    noticia = Noticia(listaTexto[0],listaTexto[1],listaTexto[2],listaTexto[3],listaTexto[4],listaTexto[5],listaTexto[6],listaTexto[7])
     return noticia
 
 #Metodos de Tratamiento de ficheros
@@ -64,21 +63,31 @@ def listaParada(tokens):
             listaDepurada.append(token)
     return listaDepurada
 
-def stemming(tokens):
-    spanishstemmer=SnowballStemmer('spanish')
-    stems = [spanishstemmer.stem(token) for token in tokens]
-    return stems
+def lematizacion(tokens):
+    nlp = spacy.load('es_core_news_sm')
+    texto = ""
+    for token in tokens:
+        texto += token + " "
+    doc = nlp(texto)
+    lemmas = [tok.lemma_ for tok in doc]
+    return lemmas
+
+def leerFicheros(rutaFichero):
+    f = open (rutaFichero,'r')
+    texto = f.read()
+    fichero = texto.splitlines()
+    return fichero
+
 
 #Metodo para generar el diccionario
 def generarDiccionario():
     diccionario = []
     ficherosTratados = []
+    matriz = []
     if os.path.isfile(rutaDiccionario): #Compruebo si existe el fichero
-        diccionario = tratamientoBasico(tokenizacion(rutaDiccionario))
+        diccionario = leerFicheros(rutaDiccionario)
     if os.path.isfile(rutaFicherosTratados): #Compruebo si existe el fichero
-        f = open (rutaFicherosTratados,'r')
-        texto = f.read()
-        ficherosTratados = texto.splitlines()
+        ficherosTratados = leerFicheros(rutaFicherosTratados)
     #Recorro todos los periodicos
     for periodico in listaPeriodicos:
         rutaPeriodico = os.getcwd() + periodico
@@ -96,11 +105,13 @@ def generarDiccionario():
                     tokens = tokenizacion(rutaTema+noticia)
                     tokens = tratamientoBasico(tokens)
                     tokens = listaParada(tokens)
-                    tokens = stemming(tokens)
-                    #Compruebo si existe el token en la lista
+                    tokens = lematizacion(tokens)
+                    
+                    #Compruebo si existe el token en la lista y sino lo añado al diccionario
                     for token in tokens:
                         if token not in diccionario:
                             diccionario.append(token)
+                        
                     #Guardo la noticia en los ficheros tratados para no volver a analizarlo           
                     ficherosTratados.append(noticiaActual)
     #Guardo en ficheros el diccionaro y las noticias tratadas
@@ -116,19 +127,31 @@ def generarDiccionario():
         f.write(elemento+"\n")
     f.close()
     
-    generarMatriz()
     return diccionario
 
 #Metodo
 def generarMatriz():
-    diccionario = tratamientoBasico(tokenizacion(rutaDiccionario))
-    noticias = tratamientoBasico(tokenizacion(rutaFicherosTratados))
+    #leo el diccionario
+    diccionario = leerFicheros(rutaDiccionario)
+    #leo el fichero de las noticias tratadas
+    noticias = leerFicheros(rutaFicherosTratados)
 
     if os.path.isfile(rutaMatriz): #Compruebo si existe el fichero
-        print("Metodo leer matriz")
+        matriz = numpy.loadtxt(rutaMatriz)
+        print(matriz)
     else:
-        matriz = numpy.zeros(5,3)
-
+        matriz = numpy.zeros((len(noticias),len(diccionario)),dtype=int)
+        i=0
+        for noticia in noticias:
+            tokens = tokenizacion(os.getcwd()+noticia)
+            tokens = tratamientoBasico(tokens)
+            tokens = listaParada(tokens)
+            tokens = lematizacion(tokens)
+            for token in tokens:
+                matriz[i][diccionario.index(token)] +=1
+            i+=1
+        print(matriz)
+        numpy.savetxt(rutaMatriz,matriz,fmt='%i')
 
 #Main
-generarDiccionario()
+generarMatriz()
