@@ -1,7 +1,7 @@
 
 class Noticia:
     def __init__(self, titulo:str, subtitulo:str, fecha,url: str,
-                 categoria:str,periodico: str, tags:list, texto: str):
+                 categoria:str,periodico: str, tags: list, texto: str):
         self.titulo = titulo.replace("\n", "")
         self.subtitulo = subtitulo.replace("\n", "")
         try:

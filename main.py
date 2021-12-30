@@ -165,9 +165,10 @@ def el20Minutos():
     guardarNoticias(salud20Min, "/Salud/")
     tecnologia20Min = get20MinutosNews("https://www.20minutos.es/tecnologia/ ", "Tecnologia")
     guardarNoticias(tecnologia20Min, "/Tecnologia/")
+    ciencia20Min = get20MinutosNews("https://www.20minutos.es/ciencia/", "Ciencia")
+    guardarNoticias(ciencia20Min, "/Ciencia/")
 
-ciencia20Min = get20MinutosNews("https://www.20minutos.es/ciencia/", "Ciencia")
-guardarNoticias(ciencia20Min, "/Ciencia/")
+
 
 
 
