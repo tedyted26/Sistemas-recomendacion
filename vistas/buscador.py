@@ -1,6 +1,7 @@
 from tkinter import *
 from functools import partial
 from tkinter import ttk
+import ast
 import sys
 import os
 
@@ -138,8 +139,8 @@ class Buscador_frame(Frame):
             if os.path.isfile(os.path.join(path, file)):
                 with open(os.path.join(path, file),'r') as f:
                     texto = f.read()
-                    listaTexto = texto.split(sep="####")
-                    noticia = Noticia(listaTexto[0],listaTexto[1],listaTexto[2],listaTexto[3],listaTexto[4],listaTexto[5],listaTexto[6],listaTexto[7])
+                    listaTexto = texto.split(sep="####\n")
+                    noticia = Noticia(listaTexto[0],listaTexto[1],listaTexto[2],listaTexto[3],listaTexto[4],listaTexto[5],ast.literal_eval(listaTexto[6]),listaTexto[7])
                     self.files_noticias.append(noticia)
                     self.lista_noticias.insert(i, str(i+1) + ". " + noticia.getTitulo())
                     i = i+1   
