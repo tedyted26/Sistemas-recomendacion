@@ -22,7 +22,7 @@ def leerNoticia(rutaFichero):
     f = open (rutaFichero,'r')
     texto = f.read()
     listaTexto = texto.split(sep="####")
-    noticia = Noticia(listaTexto[0],listaTexto[1],listaTexto[2],listaTexto[3],listaTexto[4],listaTexto[6],listaTexto[6],listaTexto[7])
+    noticia = Noticia(listaTexto[0],listaTexto[1],listaTexto[2],listaTexto[3],listaTexto[4],listaTexto[5],listaTexto[6],listaTexto[7])
     return noticia
 
 #Metodos de Tratamiento de ficheros
