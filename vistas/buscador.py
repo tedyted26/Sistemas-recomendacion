@@ -152,31 +152,33 @@ class Buscador_frame(Frame):
     # muestra el texto en la vista de noticias
     def mostrar_texto(self, event=None):
         # habilitamos el campo para la edición y si tiene algo dentro se elimina
-        self.vista_noticias['state'] = 'normal'
-        self.vista_noticias.delete('1.0', "end")
-
-        # guardamos el indice de la noticia seleccionada
         if self.lista_noticias.curselection():
-            index_noticia = self.lista_noticias.curselection()[0]
 
-            #comprobamos por cada noticia en nuestra lista de noticias cual coincide con el indice, si coincide rompemos el bucle
-            noticia = self.files_noticias[index_noticia]
+            self.vista_noticias['state'] = 'normal'
+            self.vista_noticias.delete('1.0', "end")
 
-            # el titulo se guarda con self para utilizarlo mas tarde
-            self.titulo_noticia = noticia.getTitulo()
-            self.vista_noticias.insert('1.0', self.titulo_noticia)
-            self.vista_noticias.insert(END, "\n")
-            self.vista_noticias.insert(END, noticia.getSubtitulo())
-            self.vista_noticias.insert(END, "\n")
-            self.vista_noticias.insert(END, noticia.getTexto())
-            self.vista_noticias.insert(END, "\n")
-            self.vista_noticias.insert(END, noticia.getFecha())
+            # guardamos el indice de la noticia seleccionada
+            if self.lista_noticias.curselection():
+                index_noticia = self.lista_noticias.curselection()[0]
 
-            self.vista_noticias.tag_add("bold", "1.0", "1.0 lineend")
-            self.vista_noticias.tag_config("bold", font="bold")            
+                #comprobamos por cada noticia en nuestra lista de noticias cual coincide con el indice, si coincide rompemos el bucle
+                noticia = self.files_noticias[index_noticia]
 
-        #volvemos a deshabilitar la edición
-        self.vista_noticias['state'] = 'disabled'
+                # el titulo se guarda con self para utilizarlo mas tarde
+                self.titulo_noticia = noticia.getTitulo()
+                self.vista_noticias.insert('1.0', self.titulo_noticia)
+                self.vista_noticias.insert(END, "\n")
+                self.vista_noticias.insert(END, noticia.getSubtitulo())
+                self.vista_noticias.insert(END, "\n")
+                self.vista_noticias.insert(END, noticia.getTexto())
+                self.vista_noticias.insert(END, "\n")
+                self.vista_noticias.insert(END, noticia.getFecha())
+
+                self.vista_noticias.tag_add("bold", "1.0", "1.0 lineend")
+                self.vista_noticias.tag_config("bold", font="bold")            
+
+            #volvemos a deshabilitar la edición
+            self.vista_noticias['state'] = 'disabled'
 
     #funcion para encontrar archivos dependiendo de los filtros seleccionados, devuelve la ruta y la lista de nombres de archivo
     def encontrar_archivos(self):

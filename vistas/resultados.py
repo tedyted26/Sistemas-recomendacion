@@ -110,35 +110,37 @@ class Resultados_frame(Frame):
 
 
     def mostrar_texto(self, event=None):
-        # habilitamos el campo para la edición y si tiene algo dentro se elimina
-        self.vista_noticias['state'] = 'normal'
-        self.vista_noticias.delete('1.0', "end")    
+        
+        if self.lista_noticias.curselection():
+            # habilitamos el campo para la edición y si tiene algo dentro se elimina
+            self.vista_noticias['state'] = 'normal'
+            self.vista_noticias.delete('1.0', "end")    
 
-        # guardamos la noticia seleccionada
-        if self.lista_noticias.focus()!='' and self.lista_noticias.focus()!=None:
-            index_noticia = int(self.lista_noticias.focus())
-            noticia_seleccionada = self.noticias_similares[index_noticia]
-                
-            # rellenamos vista
-            self.vista_noticias.insert('1.0', noticia_seleccionada.getTitulo())
-            self.vista_noticias.insert(END, "\n")
-            self.vista_noticias.insert(END, noticia_seleccionada.getSubtitulo())
-            self.vista_noticias.insert(END, "\n")
-            self.vista_noticias.insert(END, noticia_seleccionada.getTexto())
-            self.vista_noticias.insert(END, "\n")
-            self.vista_noticias.insert(END, noticia_seleccionada.getFecha())
+            # guardamos la noticia seleccionada
+            if self.lista_noticias.focus()!='' and self.lista_noticias.focus()!=None:
+                index_noticia = int(self.lista_noticias.focus())
+                noticia_seleccionada = self.noticias_similares[index_noticia]
+                    
+                # rellenamos vista
+                self.vista_noticias.insert('1.0', noticia_seleccionada.getTitulo())
+                self.vista_noticias.insert(END, "\n")
+                self.vista_noticias.insert(END, noticia_seleccionada.getSubtitulo())
+                self.vista_noticias.insert(END, "\n")
+                self.vista_noticias.insert(END, noticia_seleccionada.getTexto())
+                self.vista_noticias.insert(END, "\n")
+                self.vista_noticias.insert(END, noticia_seleccionada.getFecha())
 
-            self.vista_noticias.tag_add("bold", "1.0", "1.0 lineend")
-            self.vista_noticias.tag_config("bold", font="bold")
+                self.vista_noticias.tag_add("bold", "1.0", "1.0 lineend")
+                self.vista_noticias.tag_config("bold", font="bold")
 
-            if self.filtros:
-                self.lista_filtros_destino['state'] = 'normal'
-                self.lista_filtros_destino.delete('1.0', "end")
-                self.lista_filtros_destino.insert('1.0', noticia_seleccionada.getTags().replace("[", "").replace("]", "").replace("'", ""))
-                self.lista_filtros_destino['state'] = 'disabled'
+                if self.filtros:
+                    self.lista_filtros_destino['state'] = 'normal'
+                    self.lista_filtros_destino.delete('1.0', "end")
+                    self.lista_filtros_destino.insert('1.0', noticia_seleccionada.getTags().replace("[", "").replace("]", "").replace("'", ""))
+                    self.lista_filtros_destino['state'] = 'disabled'
 
-        #volvemos a deshabilitar la edición
-        self.vista_noticias['state'] = 'disabled'
+            #volvemos a deshabilitar la edición
+            self.vista_noticias['state'] = 'disabled'
         
     def cambiarPeriodico(self, event=None):
         self.lista_noticias.delete(*self.lista_noticias.get_children())
