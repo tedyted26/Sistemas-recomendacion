@@ -108,12 +108,6 @@ class Buscador_frame(Frame):
         self.vista_noticias = Text(self.frame_contenido, wrap='word', state="disabled")
         self.vista_noticias.place(relx=0.41, rely= 0.15, relheight=0.8, relwidth=0.52)
 
-        sb_2 = Scrollbar(self.frame_contenido)
-        sb_2.place(relx=0.93, rely= 0.15, relheight=0.8, relwidth=0.02)
-
-        self.vista_noticias.config(yscrollcommand=sb_2.set)
-        sb_2.config(command=self.vista_noticias.yview)
-
         self.label_error = Label(self.frame_contenido, text="Debe seleccionar una noticia", fg="red")
 
         self.rellenar()
@@ -206,7 +200,7 @@ class Buscador_frame(Frame):
 
             #configuración del frame de resultados
             self.controller.show_frame("Resultados_frame")
-            self.controller.frames["Resultados_frame"].rellenar(noticia, noticias_similares, self.filtros) #self.files_noticias debe ser sustituido por noticias_simlares, de momento esta de prueba
+            self.controller.frames["Resultados_frame"].rellenar(noticias_similares, self.filtros, noticia)
             self.controller.frames["Resultados_frame"].set_origin("Buscador_frame")
             self.controller.frames["Resultados_frame"].set_titulo_noticia(self.titulo_noticia)
         else:

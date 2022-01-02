@@ -62,9 +62,9 @@ class Buscador_por_texto_frame(Frame):
         if texto_buscado=="":
             self.label_error.place(relx=0, rely=0.7, relwidth=1) 
         else:      
-            self.buscar()
+            noticias_similares = self.buscar()
             self.controller.show_frame("Resultados_frame")
-            self.controller.frames["Resultados_frame"].rellenar(False)
+            self.controller.frames["Resultados_frame"].rellenar(noticias_similares, False)
             self.controller.frames["Resultados_frame"].set_origin("Buscador_por_texto_frame")
             self.controller.frames["Resultados_frame"].set_titulo_noticia(texto_buscado)
             self.borrar_contenido()
@@ -76,4 +76,5 @@ class Buscador_por_texto_frame(Frame):
 
     def buscar(self):
         #TODO aqui va la funcion de buscar
-        print("Buscando")
+        noticias_similares = {}
+        return noticias_similares

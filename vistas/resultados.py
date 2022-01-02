@@ -98,7 +98,7 @@ class Resultados_frame(Frame):
     def volver(self):
         self.controller.show_frame(self.origin)
     
-    def rellenar(self, noticia_origen, noticias_similares, filtros=False):
+    def rellenar(self, noticias_similares, filtros=False, noticia_origen = None):
 
         self.noticias_similares = noticias_similares # diccionario
         self.noticia_origen = noticia_origen
@@ -106,12 +106,12 @@ class Resultados_frame(Frame):
 
         self.vista_noticias['state'] = 'normal'
         self.vista_noticias.delete('1.0', "end")
-        if len(noticia_origen.tags)==0 and self.filtros:
+        if noticia_origen is not None and len(noticia_origen.tags)==0 and self.filtros:
             self.vista_noticias.insert('1.0', "No se han podido realizar los cálculos")
         self.vista_noticias['state'] = 'disabled'
 
         #si viene de la página de similares debe tener los campos de filtros visibles
-        if self.filtros:
+        if noticia_origen is not None and self.filtros:
             self.show_filtros()
             self.lista_filtros_origen['state'] = 'normal'
             self.lista_filtros_origen.delete('1.0', "end")
