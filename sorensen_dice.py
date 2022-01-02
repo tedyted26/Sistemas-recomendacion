@@ -29,7 +29,7 @@ def sorensen_dice(noticia:Noticia, top:int):
                     denominador_funcion = len(noticia.tags) + len(noticia2.tags)
                     rating = numerador_funcion/denominador_funcion
                     rating = round(rating * 100, 2)
-                    
+
                     if rating != 0:
                         lista_ratings[ruta_noticia2] = rating
     
@@ -46,8 +46,6 @@ def sorensen_dice(noticia:Noticia, top:int):
             break
 
     return lista_ratings
-    
-
     
 
 
