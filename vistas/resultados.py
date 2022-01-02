@@ -1,7 +1,23 @@
 from tkinter import *
-from functools import partial
 from tkinter import ttk
-from tkinter import scrolledtext
+import sys
+import os
+
+# código copiado de GeeksforGeeks.org para conseguir importar la clase Noticia
+  
+# getting the name of the directory
+# where the this file is present.
+current = os.path.dirname(os.path.realpath(__file__))
+  
+# Getting the parent directory name
+# where the current directory is present.
+parent = os.path.dirname(current)
+  
+# adding the parent directory to 
+# the sys.path.
+sys.path.append(parent)
+
+import tratamientoDatos
 
 class Resultados_frame(Frame):
     def __init__(self, parent):
@@ -36,7 +52,7 @@ class Resultados_frame(Frame):
         self.frame_contenido = Frame(self)
         self.frame_contenido.place(relx=0, rely= 0.05, relheight=0.95, relwidth=1)
 
-        periodicos = ["Todos", "El Mundo", "El Pais", "20 Minutos"]
+        periodicos = ["Todos", "El Mundo", "El Pais", "20Minutos"]
 
         self.label_periodicos = Label(self.frame_contenido, text="Periódico:")
         self.label_periodicos.place(relx=0.05, rely=0.055)
@@ -75,12 +91,6 @@ class Resultados_frame(Frame):
         self.vista_noticias = Text(self.frame_contenido, wrap='word', state="disabled")
         self.vista_noticias.place(relx=0.41, rely= 0.15, relheight=0.8, relwidth=0.52)
 
-        sb_2 = ttk.Scrollbar(self.frame_contenido)
-        sb_2.place(relx=0.93, rely= 0.15, relheight=0.8, relwidth=0.02)
-
-        self.vista_noticias.config(yscrollcommand=sb_2.set)
-        sb_2.config(command=self.vista_noticias.yview)
-
         #inicializamos el panel de filtros
         self.frame_filtros = Frame(self)
         
@@ -88,19 +98,34 @@ class Resultados_frame(Frame):
     def volver(self):
         self.controller.show_frame(self.origin)
     
-    def rellenar(self, noticia_origen, noticias_similares, filtros=False):
+    def rellenar(self, noticias_similares, filtros=False, noticia_origen = None):
 
-        self.noticias_similares = noticias_similares
+        self.noticias_similares = noticias_similares # diccionario
         self.noticia_origen = noticia_origen
         self.filtros = filtros
 
+        self.vista_noticias['state'] = 'normal'
+        self.vista_noticias.delete('1.0', "end")
+        if noticia_origen is not None and len(noticia_origen.tags)==0 and self.filtros:
+            self.vista_noticias.insert('1.0', "No se han podido realizar los cálculos")
+        self.vista_noticias['state'] = 'disabled'
+
         #si viene de la página de similares debe tener los campos de filtros visibles
-        if self.filtros:
+        if noticia_origen is not None and self.filtros:
             self.show_filtros()
             self.lista_filtros_origen['state'] = 'normal'
             self.lista_filtros_origen.delete('1.0', "end")
-            self.lista_filtros_origen.insert('1.0', self.noticia_origen.getTags().replace("[", "").replace("]", "").replace("'", ""))
+            if len(noticia_origen.tags)==0:
+                self.lista_filtros_origen.insert('1.0', "No se ha podido cargar información sobre las etiquetas")
+            self.lista_filtros_origen.insert('1.0', self.noticia_origen.getStringTags())
             self.lista_filtros_origen['state'] = 'disabled'
+
+            self.lista_filtros_destino['state'] = 'normal'
+            self.lista_filtros_destino.delete('1.0', "end")
+            if len(noticia_origen.tags)==0:
+                self.lista_filtros_destino.insert('1.0', "No se ha podido cargar información sobre las etiquetas")           
+            self.lista_filtros_destino['state'] = 'disabled'
+
         else:
             self.frame_contenido.place_configure(relheight=0.95)
             if self.frame_filtros.winfo_ismapped:
@@ -110,35 +135,40 @@ class Resultados_frame(Frame):
 
 
     def mostrar_texto(self, event=None):
-        # habilitamos el campo para la edición y si tiene algo dentro se elimina
-        self.vista_noticias['state'] = 'normal'
-        self.vista_noticias.delete('1.0', "end")    
+        
+        if self.lista_noticias.focus():
+            # habilitamos el campo para la edición y si tiene algo dentro se elimina
+            self.vista_noticias['state'] = 'normal'
+            self.vista_noticias.delete('1.0', "end")    
 
-        # guardamos la noticia seleccionada
-        if self.lista_noticias.focus()!='' and self.lista_noticias.focus()!=None:
-            index_noticia = int(self.lista_noticias.focus())
-            noticia_seleccionada = self.noticias_similares[index_noticia]
-                
-            # rellenamos vista
-            self.vista_noticias.insert('1.0', noticia_seleccionada.getTitulo())
-            self.vista_noticias.insert(END, "\n")
-            self.vista_noticias.insert(END, noticia_seleccionada.getSubtitulo())
-            self.vista_noticias.insert(END, "\n")
-            self.vista_noticias.insert(END, noticia_seleccionada.getTexto())
-            self.vista_noticias.insert(END, "\n")
-            self.vista_noticias.insert(END, noticia_seleccionada.getFecha())
+            # guardamos la noticia seleccionada
+            if self.lista_noticias.focus()!='' and self.lista_noticias.focus()!=None:
+                index_noticia = int(self.lista_noticias.focus())
+                #noticia_seleccionada = self.noticias_similares[index_noticia]
+                path_noticia_seleccionada = list(self.noticias_similares)[index_noticia]
 
-            self.vista_noticias.tag_add("bold", "1.0", "1.0 lineend")
-            self.vista_noticias.tag_config("bold", font="bold")
+                noticia_seleccionada = tratamientoDatos.leerNoticia(path_noticia_seleccionada)
+                    
+                # rellenamos vista
+                self.vista_noticias.insert('1.0', noticia_seleccionada.titulo)
+                self.vista_noticias.insert(END, "\n")
+                self.vista_noticias.insert(END, noticia_seleccionada.subtitulo)
+                self.vista_noticias.insert(END, "\n")
+                self.vista_noticias.insert(END, noticia_seleccionada.texto)
+                self.vista_noticias.insert(END, "\n")
+                self.vista_noticias.insert(END, noticia_seleccionada.fecha)
 
-            if self.filtros:
-                self.lista_filtros_destino['state'] = 'normal'
-                self.lista_filtros_destino.delete('1.0', "end")
-                self.lista_filtros_destino.insert('1.0', noticia_seleccionada.getTags().replace("[", "").replace("]", "").replace("'", ""))
-                self.lista_filtros_destino['state'] = 'disabled'
+                self.vista_noticias.tag_add("bold", "1.0", "1.0 lineend")
+                self.vista_noticias.tag_config("bold", font="bold")
 
-        #volvemos a deshabilitar la edición
-        self.vista_noticias['state'] = 'disabled'
+                if self.filtros:
+                    self.lista_filtros_destino['state'] = 'normal'
+                    self.lista_filtros_destino.delete('1.0', "end")
+                    self.lista_filtros_destino.insert('1.0', noticia_seleccionada.getStringTags())
+                    self.lista_filtros_destino['state'] = 'disabled'
+
+            #volvemos a deshabilitar la edición
+            self.vista_noticias['state'] = 'disabled'
         
     def cambiarPeriodico(self, event=None):
         self.lista_noticias.delete(*self.lista_noticias.get_children())
@@ -147,15 +177,15 @@ class Resultados_frame(Frame):
         periodico_seleccionado = self.periodicos_combobox.get()
 
         i = 0
-        for noticia in self.noticias_similares:
-            #FIXME añadir el porcentaje de similitud y el número de noticia en values despues de hacer los cálculos
-            #values=(numero de noticia, titulo, % similitud)
-            #ver cómo se van a mostrar las noticias si se ordenan en cuanto a similitud
+        for key in self.noticias_similares:
+            noticia = tratamientoDatos.leerNoticia(key)
+            ranking = self.noticias_similares[key]
+
             if periodico_seleccionado=="Todos":
-                self.lista_noticias.insert(parent="", index="end", iid = i, text="a", values=(i+1, noticia.getTitulo(), "80%"))
+                self.lista_noticias.insert(parent="", index="end", iid = i, text="a", values=(i+1, noticia.titulo, ranking))
                 i = i+1
-            elif periodico_seleccionado==noticia.getPeriodico():
-                self.lista_noticias.insert(parent="", index="end", iid = i, text="a", values=(i+1, noticia.getTitulo(), "80%"))
+            elif periodico_seleccionado==noticia.periodico:
+                self.lista_noticias.insert(parent="", index="end", iid = i, text="a", values=(i+1, noticia.titulo, ranking))
                 i = i+1
 
         # seleccionar el primer elemento de la lista por defecto
@@ -192,4 +222,6 @@ class Resultados_frame(Frame):
 
         self.lista_filtros_destino.config(yscrollcommand=sb_4.set)
         sb_4.config(command=self.lista_filtros_destino.yview)
+     
+            
 
