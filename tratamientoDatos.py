@@ -11,7 +11,7 @@ import ast
 
 
 #Variables globales
-listaPeriodicos = ["/El Mundo/","/El Pais/"]
+listaPeriodicos = ["/El Mundo/","/El Pais/","/20Minutos/"]
 rutaListaParada = "listaParada.txt"
 rutaDiccionario = "diccionario.txt"
 rutaFicherosTratados = "ficherosLeidos.txt"
@@ -136,10 +136,39 @@ def generarMatriz():
     diccionario = leerFicheros(rutaDiccionario)
     #leo el fichero de las noticias tratadas
     noticias = leerFicheros(rutaFicherosTratados)
-
+    print("Numero de noticias: " + str(len(noticias)))
     if os.path.isfile(rutaMatriz): #Compruebo si existe el fichero
         matriz = numpy.loadtxt(rutaMatriz)
-        print(matriz)
+        print("Numero de filas en la matriz inicialmente: "+str(len(matriz)))
+        print("Numero de palabras en el diccionario: "+str(len(diccionario)))
+        print("Numero de palabras en la primera columna de la matriz antes de rellenar de ceros: "+str(len(matriz[0])))
+        dicCols = len(diccionario)
+        nFila = 0
+        #Rellenamos de ceros las filas antiguas
+        for fila in matriz:
+            filaCols = len(fila)
+            difCols = dicCols - filaCols
+            print(difCols)
+            for i in range(difCols):
+                numpy.append(fila,0) #Este no funciona
+            matriz[nFila] = fila
+            nFila +=1
+        print("Numero de palabras en la primera columna de la matriz después de rellenar de ceros: "+str(len(matriz[0])))
+        #Guardamos las nuevas filas
+        filasMatrizInicial = len(matriz)
+        filasMatrizFinal = len(noticias)
+        diferenciaFilas = filasMatrizFinal-filasMatrizInicial
+        for i in range(diferenciaFilas):
+            filaNueva = numpy.zeros(len(diccionario))
+            tokens = tokenizacion(os.getcwd()+noticias[filasMatrizInicial+i] )
+            tokens = tratamientoBasico(tokens)
+            tokens = listaParada(tokens)
+            tokens = lematizacion(tokens)
+            for token in tokens:
+                filaNueva[diccionario.index(token)] +=1
+            numpy.append(matriz,filaNueva) #Este no funciona
+            print(len(matriz))
+        numpy.savetxt(rutaMatriz,matriz,fmt='%i')
     else:
         matriz = numpy.zeros((len(noticias),len(diccionario)),dtype=int)
         i=0
@@ -151,8 +180,8 @@ def generarMatriz():
             for token in tokens:
                 matriz[i][diccionario.index(token)] +=1
             i+=1
-        print(matriz)
         numpy.savetxt(rutaMatriz,matriz,fmt='%i')
 
 #Main
+#generarDiccionario()
 generarMatriz()
