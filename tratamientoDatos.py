@@ -2,12 +2,12 @@
 #python -m spacy download es
 from nltk import text
 import spacy 
-
+import ast
 import os
 from pathlib import Path
 from Noticia import Noticia
 import numpy
-
+from datetime import datetime
 
 #Variables globales
 listaPeriodicos = ["/El Mundo/","/El Pais/"]
@@ -21,8 +21,10 @@ def leerNoticia(rutaFichero):
     print(rutaFichero)
     f = open (rutaFichero,'r')
     texto = f.read()
-    listaTexto = texto.split(sep="####")
-    noticia = Noticia(listaTexto[0],listaTexto[1],listaTexto[2],listaTexto[3],listaTexto[4],listaTexto[5],listaTexto[6],listaTexto[7])
+    listaTexto = texto.split(sep="####\n")
+    date_time_obj = datetime.strptime(listaTexto[2], '%Y-%m-%d %H:%M:%S')
+    noticia = Noticia(listaTexto[0],listaTexto[1],date_time_obj,listaTexto[3],listaTexto[4],listaTexto[5],ast.literal_eval(listaTexto[6]),listaTexto[7])
+    print (type(noticia.fecha)) 
     return noticia
 
 #Metodos de Tratamiento de ficheros
@@ -138,7 +140,10 @@ def generarMatriz():
 
     if os.path.isfile(rutaMatriz): #Compruebo si existe el fichero
         matriz = numpy.loadtxt(rutaMatriz)
-        print(matriz)
+        diccionario = generarDiccionario()
+        if len(noticias) != len(matriz):
+
+            print(matriz)
     else:
         matriz = numpy.zeros((len(noticias),len(diccionario)),dtype=int)
         i=0
@@ -154,4 +159,5 @@ def generarMatriz():
         numpy.savetxt(rutaMatriz,matriz,fmt='%i')
 
 #Main
-generarMatriz()
+leerNoticia(os.getcwd()+"/El Pais/Ciencia/Ciencia.2021-12-16.18.txt")
+#generarMatriz()
