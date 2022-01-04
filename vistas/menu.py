@@ -20,10 +20,10 @@ class Menu_frame(Frame):
         self.texto = Button(self, text="Búsqueda por texto", command=partial(self.cambiar, "Buscador_por_texto_frame", False))
         self.texto.place(relx=0.05, rely=0.6, relwidth=0.25)
 
-        self.similares = Button(self, text="Búsqueda de noticias similares", command=partial(self.cambiar, "Buscador_frame", True))
+        self.similares = Button(self, text="Búsqueda de noticias similares", command=partial(self.cambiar, "Buscador_frame", False))
         self.similares.place(relx=0.375, rely=0.6, relwidth=0.25)
 
-        self.recomendadas = Button(self, text="Recomendación por contenido", command=partial(self.cambiar, "Buscador_frame", False))
+        self.recomendadas = Button(self, text="Recomendación por contenido", command=partial(self.cambiar, "Buscador_frame", True))
         self.recomendadas.place(relx=0.7, rely=0.6, relwidth=0.25)
 
     def cambiar(self, pagina, filtros):

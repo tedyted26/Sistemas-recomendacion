@@ -1,5 +1,4 @@
 from tkinter import *
-from functools import partial
 from tkinter import ttk
 import sys
 import os
@@ -19,6 +18,8 @@ parent = os.path.dirname(current)
 sys.path.append(parent)
 
 from Noticia import Noticia
+from sorensen_dice import sorensen_dice
+import tratamientoDatos
 
 class Buscador_frame(Frame):
     def __init__(self, parent):
@@ -32,10 +33,9 @@ class Buscador_frame(Frame):
     def set_con_filtros(self, filtros=False):
         self.filtros = filtros
         if self.filtros:    #dependiendo de si se utilizará para una cosa u otra se pone un titulo u otro
-            self.titulo_ventana.config(text="Buscador de noticias similares por etiquetas")
-            
+            self.titulo_ventana.config(text="Recomendador por contenido (etiquetas)")          
         else:
-            self.titulo_ventana.config(text="Buscador de noticias recomendadas por contenido")
+            self.titulo_ventana.config(text="Buscador de noticias similares")
        
 
     def create_widgets(self):
@@ -53,7 +53,7 @@ class Buscador_frame(Frame):
         self.frame_contenido = Frame(self)
         self.frame_contenido.place(relx=0, rely= 0.05, relheight=0.95, relwidth=1)
 
-        self.periodicos = ["El Mundo", "El Pais", "20 Minutos"]
+        self.periodicos = ["El Mundo", "El Pais", "20Minutos"]
         self.categorias = ["Salud/Sanidad", "Tecnologia", "Ciencia"]
         self.top = [3, 5, 10]
 
@@ -108,12 +108,6 @@ class Buscador_frame(Frame):
         self.vista_noticias = Text(self.frame_contenido, wrap='word', state="disabled")
         self.vista_noticias.place(relx=0.41, rely= 0.15, relheight=0.8, relwidth=0.52)
 
-        sb_2 = Scrollbar(self.frame_contenido)
-        sb_2.place(relx=0.93, rely= 0.15, relheight=0.8, relwidth=0.02)
-
-        self.vista_noticias.config(yscrollcommand=sb_2.set)
-        sb_2.config(command=self.vista_noticias.yview)
-
         self.label_error = Label(self.frame_contenido, text="Debe seleccionar una noticia", fg="red")
 
         self.rellenar()
@@ -136,13 +130,11 @@ class Buscador_frame(Frame):
         # por cada archivo en la carpeta creamos una Noticia, la metemos en el array de noticias file_noticias, y la añadimos a la vista
         i=0
         for file in files:
-            if os.path.isfile(os.path.join(path, file)):
-                with open(os.path.join(path, file),'r') as f:
-                    texto = f.read()
-                    listaTexto = texto.split(sep="####")
-                    noticia = Noticia(listaTexto[0],listaTexto[1],listaTexto[2],listaTexto[3],listaTexto[4],listaTexto[5],listaTexto[6],listaTexto[7])
+            rutaFichero = os.path.join(path, file)
+            if os.path.isfile(rutaFichero):
+                    noticia = tratamientoDatos.leerNoticia(rutaFichero)
                     self.files_noticias.append(noticia)
-                    self.lista_noticias.insert(i, str(i+1) + ". " + noticia.getTitulo())
+                    self.lista_noticias.insert(i, str(i+1) + ". " + noticia.titulo)
                     i = i+1   
    
         # esto deja seleccionado un archivo de base y muestra su contenido
@@ -152,31 +144,33 @@ class Buscador_frame(Frame):
     # muestra el texto en la vista de noticias
     def mostrar_texto(self, event=None):
         # habilitamos el campo para la edición y si tiene algo dentro se elimina
-        self.vista_noticias['state'] = 'normal'
-        self.vista_noticias.delete('1.0', "end")
-
-        # guardamos el indice de la noticia seleccionada
         if self.lista_noticias.curselection():
-            index_noticia = self.lista_noticias.curselection()[0]
 
-            #comprobamos por cada noticia en nuestra lista de noticias cual coincide con el indice, si coincide rompemos el bucle
-            noticia = self.files_noticias[index_noticia]
+            self.vista_noticias['state'] = 'normal'
+            self.vista_noticias.delete('1.0', "end")
 
-            # el titulo se guarda con self para utilizarlo mas tarde
-            self.titulo_noticia = noticia.getTitulo()
-            self.vista_noticias.insert('1.0', self.titulo_noticia)
-            self.vista_noticias.insert(END, "\n")
-            self.vista_noticias.insert(END, noticia.getSubtitulo())
-            self.vista_noticias.insert(END, "\n")
-            self.vista_noticias.insert(END, noticia.getTexto())
-            self.vista_noticias.insert(END, "\n")
-            self.vista_noticias.insert(END, noticia.getFecha())
+            # guardamos el indice de la noticia seleccionada
+            if self.lista_noticias.curselection():
+                index_noticia = self.lista_noticias.curselection()[0]
 
-            self.vista_noticias.tag_add("bold", "1.0", "1.0 lineend")
-            self.vista_noticias.tag_config("bold", font="bold")            
+                #comprobamos por cada noticia en nuestra lista de noticias cual coincide con el indice, si coincide rompemos el bucle
+                noticia = self.files_noticias[index_noticia]
 
-        #volvemos a deshabilitar la edición
-        self.vista_noticias['state'] = 'disabled'
+                # el titulo se guarda con self para utilizarlo mas tarde
+                self.titulo_noticia = noticia.titulo
+                self.vista_noticias.insert('1.0', self.titulo_noticia)
+                self.vista_noticias.insert(END, "\n")
+                self.vista_noticias.insert(END, noticia.subtitulo)
+                self.vista_noticias.insert(END, "\n")
+                self.vista_noticias.insert(END, noticia.texto)
+                self.vista_noticias.insert(END, "\n")
+                self.vista_noticias.insert(END, noticia.fecha)
+
+                self.vista_noticias.tag_add("bold", "1.0", "1.0 lineend")
+                self.vista_noticias.tag_config("bold", font="bold")            
+
+            #volvemos a deshabilitar la edición
+            self.vista_noticias['state'] = 'disabled'
 
     #funcion para encontrar archivos dependiendo de los filtros seleccionados, devuelve la ruta y la lista de nombres de archivo
     def encontrar_archivos(self):
@@ -193,24 +187,30 @@ class Buscador_frame(Frame):
         return path,files
 
     def boton_buscar(self):
-        #hay que recoger antes la noticia seleccionada de los widgets
+
         if self.lista_noticias.curselection():
             self.label_error.forget()
 
             indice = self.lista_noticias.curselection()[0] #esto devuelve el índice del archivo
             noticia = self.files_noticias[indice]
 
-            noticias_similares = self.buscar(noticia)
+            top = self.top_combobox.get()
+
+            noticias_similares = self.buscar(noticia, int(top))
 
             #configuración del frame de resultados
             self.controller.show_frame("Resultados_frame")
-            self.controller.frames["Resultados_frame"].rellenar(noticia, self.files_noticias, self.filtros) #self.files_noticias debe ser sustituido por noticias_simlares, de momento esta de prueba
+            self.controller.frames["Resultados_frame"].rellenar(noticias_similares, self.filtros, noticia)
             self.controller.frames["Resultados_frame"].set_origin("Buscador_frame")
             self.controller.frames["Resultados_frame"].set_titulo_noticia(self.titulo_noticia)
         else:
             self.label_error.place(relx=0.79, rely=0.005)
     
-    def buscar(self, noticia):
+    def buscar(self, noticia, top):
         #TODO funcion de buscar (calculos y mierdas)
-        noticias_similares = []
+        noticias_similares = {}
+        if self.filtros:
+            noticias_similares = sorensen_dice(noticia, top)
+        else: 
+            print("Aqui va la busqueda por similares")
         return noticias_similares
