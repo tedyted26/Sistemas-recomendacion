@@ -138,6 +138,7 @@ def generarMatriz():
     print("Numero de noticias: " + str(len(noticias)))
     if os.path.isfile(rutaMatriz): #Compruebo si existe el fichero
         matriz = numpy.loadtxt(rutaMatriz)
+        matrizNueva = numpy.zeros((len(noticias),len(diccionario)),dtype=int)
         print("Numero de filas en la matriz inicialmente: "+str(len(matriz)))
         print("Numero de palabras en el diccionario: "+str(len(diccionario)))
         print("Numero de palabras en la primera columna de la matriz antes de rellenar de ceros: "+str(len(matriz[0])))
@@ -147,12 +148,10 @@ def generarMatriz():
         for fila in matriz:
             filaCols = len(fila)
             difCols = dicCols - filaCols
-            print(difCols)
             for i in range(difCols):
-                numpy.append(fila,0) #Este no funciona
-            matriz[nFila] = fila
+                fila = numpy.append(fila,0)
+            matrizNueva[nFila] = fila
             nFila +=1
-        print("Numero de palabras en la primera columna de la matriz después de rellenar de ceros: "+str(len(matriz[0])))
         #Guardamos las nuevas filas
         filasMatrizInicial = len(matriz)
         filasMatrizFinal = len(noticias)
@@ -165,9 +164,8 @@ def generarMatriz():
             tokens = lematizacion(tokens)
             for token in tokens:
                 filaNueva[diccionario.index(token)] +=1
-            numpy.append(matriz,filaNueva) #Este no funciona
-            print(len(matriz))
-        numpy.savetxt(rutaMatriz,matriz,fmt='%i')
+            matrizNueva[filasMatrizInicial+i] = filaNueva
+        numpy.savetxt(rutaMatriz,matrizNueva,fmt='%i')
     else:
         matriz = numpy.zeros((len(noticias),len(diccionario)),dtype=int)
         i=0
@@ -199,5 +197,8 @@ def coseno(doc1, doc2):
     
 #Main
 #generarDiccionario()
-#generarMatriz()
-print( coseno([3,6,6], [3,3,5]) )
+generarMatriz()
+#print( coseno([3,6,6], [3,3,5]) )
+
+
+
