@@ -179,21 +179,6 @@ def generarMatriz():
             i+=1
         numpy.savetxt(rutaMatriz,matriz,fmt='%i')
 
-#Metodo para calcular la similitud en función del coseno
-def coseno(doc1, doc2):
-    numerador = 0
-    cuadradosDoc1 = 0
-    cuadradosDoc2 = 0
-    i = 0
-    for i in range(len(doc1)):
-        numerador += (doc1[i] * doc2[i])
-        cuadradosDoc1 += doc1[i]**2
-        cuadradosDoc2 += doc2[i]**2
-    raizDoc1 = cuadradosDoc1**(0.5)
-    raizDoc2 = cuadradosDoc2**(0.5)
-    denominador = raizDoc1 * raizDoc2
-    return numerador/denominador
-
     
 #Main
 #generarDiccionario()
