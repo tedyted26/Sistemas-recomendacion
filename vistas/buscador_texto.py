@@ -1,6 +1,24 @@
 from tkinter import *
 from functools import partial
 from tkinter import ttk
+import os
+import sys
+
+# código copiado de GeeksforGeeks.org para conseguir importar la clase Noticia
+  
+# getting the name of the directory
+# where the this file is present.
+current = os.path.dirname(os.path.realpath(__file__))
+  
+# Getting the parent directory name
+# where the current directory is present.
+parent = os.path.dirname(current)
+  
+# adding the parent directory to 
+# the sys.path.
+sys.path.append(parent)
+
+import teorema_coseno
 
 class Buscador_por_texto_frame(Frame):
     def __init__(self, parent):
@@ -59,10 +77,12 @@ class Buscador_por_texto_frame(Frame):
     
     def boton_buscar(self): 
         texto_buscado = self.input_buscador.get()
+        top = self.top_combobox.get()
+
         if texto_buscado=="":
             self.label_error.place(relx=0, rely=0.7, relwidth=1) 
         else:      
-            noticias_similares = self.buscar()
+            noticias_similares = self.buscar(texto_buscado, top)
             self.controller.show_frame("Resultados_frame")
             self.controller.frames["Resultados_frame"].rellenar(noticias_similares, False)
             self.controller.frames["Resultados_frame"].set_origin("Buscador_por_texto_frame")
@@ -73,8 +93,3 @@ class Buscador_por_texto_frame(Frame):
         self.input_buscador.delete(0,"end")
         if self.label_error.winfo_ismapped:
            self.label_error.place_forget()
-
-    def buscar(self):
-        #TODO aqui va la funcion de buscar
-        noticias_similares = {}
-        return noticias_similares
