@@ -5,7 +5,7 @@ import TransformTFIDF as tfidf
 
 '''
 Metodo principal que calcula las similitudes entre un string y las noticias del conjunto
-Devuelve un diccionario de claves-valor donde la clabe es la ruta del archivo y el valor el porcentaje de similitud
+Devuelve un diccionario de claves-valor donde la clave es la ruta del archivo y el valor el porcentaje de similitud
 Los resultados están ordenados de mayor a menor según el valor del porcentaje
 '''
 def texto_coseno(texto:str, top:int):
@@ -24,7 +24,7 @@ def texto_coseno(texto:str, top:int):
 
 '''
 Metodo principal que calcula las similitudes entre una noticia dada y las demás noticias del conjunto
-Devuelve un diccionario de claves-valor donde la clabe es la ruta del archivo y el valor el porcentaje de similitud
+Devuelve un diccionario de claves-valor donde la clave es la ruta del archivo y el valor el porcentaje de similitud
 Los resultados están ordenados de mayor a menor según el valor del porcentaje
 '''
 def noticias_coseno(noticia:Noticia, top:int):
