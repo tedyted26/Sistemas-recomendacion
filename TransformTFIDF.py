@@ -76,4 +76,3 @@ def testTransformMatrizToTFIDF():
     m2 = matrixToTFIDF(matriz)
     print()
 
-testTransformMatrizToTFIDF()
