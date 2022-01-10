@@ -11,27 +11,11 @@ class Noticia:
         self.tags = tags
         self.texto = texto
 
-    def getTexto(self):
-        return self.texto
-    
-    def getTitulo(self):
-        return self.titulo
-
-    def getSubtitulo(self):
-        return self.subtitulo
-
-    def getFecha(self):
-        return self.fecha
-
-    def getUrl(self):
-        return self.url
-
-    def getCategoria(self):
-        return self.categoria
-
-    def getPeriodico(self):
-        return self.periodico
-
-    def getTags(self):
-        return self.tags
-
+    def getStringTags(self):
+        string = ""
+        i = 0
+        for i in range(len(self.tags)):
+            string = string + self.tags[i]
+            if i!=len(self.tags)-1:
+                string = string + " - "
+        return string

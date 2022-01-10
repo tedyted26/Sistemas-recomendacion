@@ -20,6 +20,7 @@ sys.path.append(parent)
 from Noticia import Noticia
 from sorensen_dice import sorensen_dice
 import tratamientoDatos
+import teorema_coseno
 
 class Buscador_frame(Frame):
     def __init__(self, parent):
@@ -212,5 +213,5 @@ class Buscador_frame(Frame):
         if self.filtros:
             noticias_similares = sorensen_dice(noticia, top)
         else: 
-            print("Aqui va la busqueda por similares")
+            noticias_similares = teorema_coseno.noticias_coseno(noticia, top)
         return noticias_similares
