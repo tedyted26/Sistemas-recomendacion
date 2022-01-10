@@ -8,6 +8,7 @@ from pathlib import Path
 from Noticia import Noticia
 import numpy
 import ast
+import TransformTFIDF
 
 
 #Variables globales
@@ -166,6 +167,7 @@ def generarMatriz():
                 filaNueva[diccionario.index(token)] +=1
             matrizNueva[filasMatrizInicial+i] = filaNueva
         numpy.savetxt(rutaMatriz,matrizNueva,fmt='%i')
+        return matrizNueva
     else:
         matriz = numpy.zeros((len(noticias),len(diccionario)),dtype=int)
         i=0
@@ -178,6 +180,7 @@ def generarMatriz():
                 matriz[i][diccionario.index(token)] +=1
             i+=1
         numpy.savetxt(rutaMatriz,matriz,fmt='%i')
+        return matriz
 
 #Metodo para calcular la similitud en función del coseno
 def coseno(doc1, doc2):
@@ -197,8 +200,7 @@ def coseno(doc1, doc2):
     
 #Main
 #generarDiccionario()
-generarMatriz()
-#print( coseno([3,6,6], [3,3,5]) )
-
-
-
+matriz = generarMatriz()
+print( coseno(matriz[0], matriz[1]) )
+matrizNueva = TransformTFIDF.matrixToTFIDF(matriz)
+print(matrizNueva)
