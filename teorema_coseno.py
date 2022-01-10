@@ -3,7 +3,11 @@ import numpy
 import tratamientoDatos as td
 import TransformTFIDF as tfidf
 
-# pasamos un texto para buscar noticias a partir de su similitud
+'''
+Metodo principal que calcula las similitudes entre un string y las noticias del conjunto
+Devuelve un diccionario de claves-valor donde la clabe es la ruta del archivo y el valor el porcentaje de similitud
+Los resultados están ordenados de mayor a menor según el valor del porcentaje
+'''
 def texto_coseno(texto:str, top:int):
 
     # leer matriz y convertirla a tf-idf FIXME
@@ -18,7 +22,11 @@ def texto_coseno(texto:str, top:int):
 
     
 
-#pasamos una noticia para buscar otras similares
+'''
+Metodo principal que calcula las similitudes entre una noticia dada y las demás noticias del conjunto
+Devuelve un diccionario de claves-valor donde la clabe es la ruta del archivo y el valor el porcentaje de similitud
+Los resultados están ordenados de mayor a menor según el valor del porcentaje
+'''
 def noticias_coseno(noticia:Noticia, top:int):
 
     # FIXME coger matriz en tf-idf
@@ -84,8 +92,11 @@ def documento_tfidf_origen_a_diccionario_con_resultados(doc_o_texto_origen_tfidf
         # teorema del coseno
         resultado = coseno(doc_o_texto_origen_tfidf, doc)
 
-        # Guardar noticia y la similitud en el diccionario
-        lista_ratings[ruta_noticia] = resultado*100
+        # Guardar noticia y la similitud en el diccionario sólo si el resultado es diferente de 1 (si es 1 significa que son el mismo vector o noticia)
+        if resultado != 1:
+            lista_ratings[ruta_noticia] = round(resultado * 100, 2) # para que quede bonito
+        else:
+            return
 
     # Ordeno el diccionario por el valor del rating
     lista = sorted(lista_ratings.items(), key=lambda x: x[1], reverse=True)
