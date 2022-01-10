@@ -1,4 +1,5 @@
 import Noticia
+import numpy
 
 # pasamos un texto para buscar noticias a partir de su similitud
 def texto_coseno(texto:str, top:int):
@@ -46,11 +47,19 @@ def noticias_coseno(noticia:Noticia, top:int):
 
 #Metodo para calcular la similitud en función del coseno
 def coseno(doc1, doc2):
+    lenDoc1 = len(doc1)
+    lenDoc2 = len(doc2)
+    #Comprobamos que ambas listas son del mismo tamaño
+    if lenDoc1 != lenDoc2:
+        difLen = lenDoc1 - lenDoc2
+        for i in range(difLen):
+            doc1 = numpy.append(doc1,0)
+
     numerador = 0
     cuadradosDoc1 = 0
     cuadradosDoc2 = 0
-    i = 0
-    for i in range(len(doc1)):
+
+    for i in range(lenDoc1):
         numerador += (doc1[i] * doc2[i])
         cuadradosDoc1 += doc1[i]**2
         cuadradosDoc2 += doc2[i]**2
