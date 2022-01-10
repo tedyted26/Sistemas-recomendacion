@@ -8,10 +8,11 @@ from pathlib import Path
 from Noticia import Noticia
 import numpy
 import ast
+import TransformTFIDF
 
 
 #Variables globales
-listaPeriodicos = ["/El Mundo/","/El Pais/"]
+listaPeriodicos = ["/El Mundo/","/El Pais/","/20Minutos/"]
 rutaListaParada = "listaParada.txt"
 rutaDiccionario = "diccionario.txt"
 rutaFicherosTratados = "ficherosLeidos.txt"
@@ -25,17 +26,26 @@ def leerNoticia(rutaFichero):
     listaTexto = texto.split(sep="####\n")
     noticia = Noticia(listaTexto[0],listaTexto[1],listaTexto[2],listaTexto[3],listaTexto[4],listaTexto[5],ast.literal_eval(listaTexto[6]),listaTexto[7])
     return noticia
-
-#Metodos de Tratamiento de ficheros
-def tokenizacion(rutaFichero):
-    nlp = spacy.load('es_core_news_sm')
-    
+#Metodos para lectura de ficheros
+def leerFichero(rutaFichero):
     if rutaFichero==rutaListaParada or rutaFichero==rutaDiccionario:
         f = open (rutaFichero,'r')
         texto = f.read() 
     else:
         texto = leerNoticia(rutaFichero).getTexto()
+    return texto
 
+def leerFicheros(rutaFichero):
+    f = open (rutaFichero,'r')
+    texto = f.read()
+    fichero = texto.splitlines()
+    return fichero
+
+
+#Metodos de Tratamiento de ficheros
+def tokenizacion(texto):
+    nlp = spacy.load('es_core_news_sm')
+    
     doc = nlp(texto) # Crea un objeto de spacy tipo nlp
     tokens = [t.orth_ for t in doc] # Crea una lista con las palabras del texto
     return tokens
@@ -51,7 +61,7 @@ def tratamientoBasico(tokens):
     return listaTratada
 
 def listaParada(tokens):
-    listaParada = tratamientoBasico(tokenizacion(rutaListaParada))
+    listaParada = tratamientoBasico(tokenizacion(leerFichero(rutaListaParada)))
     listaDepurada = []
     for token in tokens:
         encontrado = False
@@ -72,13 +82,6 @@ def lematizacion(tokens):
     doc = nlp(texto)
     lemmas = [tok.lemma_ for tok in doc]
     return lemmas
-
-def leerFicheros(rutaFichero):
-    f = open (rutaFichero,'r')
-    texto = f.read()
-    fichero = texto.splitlines()
-    return fichero
-
 
 #Metodo para generar el diccionario
 def generarDiccionario():
@@ -130,29 +133,81 @@ def generarDiccionario():
     
     return diccionario
 
-#Metodo
+#Metodo para generar la matriz
 def generarMatriz():
     #leo el diccionario
     diccionario = leerFicheros(rutaDiccionario)
     #leo el fichero de las noticias tratadas
     noticias = leerFicheros(rutaFicherosTratados)
-
+    print("Numero de noticias: " + str(len(noticias)))
     if os.path.isfile(rutaMatriz): #Compruebo si existe el fichero
         matriz = numpy.loadtxt(rutaMatriz)
-        print(matriz)
+        matrizNueva = numpy.zeros((len(noticias),len(diccionario)),dtype=int)
+        print("Numero de filas en la matriz inicialmente: "+str(len(matriz)))
+        print("Numero de palabras en el diccionario: "+str(len(diccionario)))
+        print("Numero de palabras en la primera columna de la matriz antes de rellenar de ceros: "+str(len(matriz[0])))
+        dicCols = len(diccionario)
+        nFila = 0
+        #Rellenamos de ceros las filas antiguas
+        for fila in matriz:
+            filaCols = len(fila)
+            difCols = dicCols - filaCols
+            for i in range(difCols):
+                fila = numpy.append(fila,0)
+            matrizNueva[nFila] = fila
+            nFila +=1
+        #Guardamos las nuevas filas
+        filasMatrizInicial = len(matriz)
+        filasMatrizFinal = len(noticias)
+        diferenciaFilas = filasMatrizFinal-filasMatrizInicial
+        for i in range(diferenciaFilas):
+            filaNueva = numpy.zeros(len(diccionario))
+            tokens = tokenizacion(leerFichero(os.getcwd()+noticias[filasMatrizInicial+i]) )
+            tokens = tratamientoBasico(tokens)
+            tokens = listaParada(tokens)
+            tokens = lematizacion(tokens)
+            for token in tokens:
+                filaNueva[diccionario.index(token)] +=1
+            matrizNueva[filasMatrizInicial+i] = filaNueva
+        numpy.savetxt(rutaMatriz,matrizNueva,fmt='%i')
+        return matrizNueva
     else:
         matriz = numpy.zeros((len(noticias),len(diccionario)),dtype=int)
         i=0
         for noticia in noticias:
-            tokens = tokenizacion(os.getcwd()+noticia)
+            tokens = tokenizacion(leerFichero(os.getcwd()+noticia))
             tokens = tratamientoBasico(tokens)
             tokens = listaParada(tokens)
             tokens = lematizacion(tokens)
             for token in tokens:
                 matriz[i][diccionario.index(token)] +=1
             i+=1
-        print(matriz)
         numpy.savetxt(rutaMatriz,matriz,fmt='%i')
+        return matriz
 
+
+def buscadorFrase(frase):
+    #leo el diccionario
+    diccionario = leerFicheros(rutaDiccionario)
+
+    tokens = tokenizacion(frase)
+    tokens = tratamientoBasico(tokens)
+    tokens = listaParada(tokens)
+    tokens = lematizacion(tokens)
+    #Creo una linea de ceros del tamaño del diccionario
+    linea = numpy.zeros(len(diccionario),dtype=int)
+    for token in tokens:
+        if(token in diccionario):
+            linea[diccionario.index(token)] +=1
+        else:
+            linea = numpy.append(linea,1)
+            diccionario.append(token)
+    return linea
+    
 #Main
-generarMatriz()
+#generarDiccionario()
+#matriz = generarMatriz()
+#print( coseno(matriz[0], matriz[1]) )
+#matrizNueva = TransformTFIDF.matrixToTFIDF(matriz)
+#print(matrizNueva)
+print(len(buscadorFrase("")))

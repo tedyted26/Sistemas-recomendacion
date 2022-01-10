@@ -46,9 +46,3 @@ def sorensen_dice(noticia:Noticia, top:int):
             break
 
     return lista_ratings
-    
-
-
-
-   
-
