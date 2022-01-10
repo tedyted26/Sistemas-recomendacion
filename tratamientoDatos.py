@@ -184,25 +184,6 @@ def generarMatriz():
             i+=1
         numpy.savetxt(rutaMatriz,matriz,fmt='%i')
         return matriz
-
-
-def buscadorFrase(frase):
-    #leo el diccionario
-    diccionario = leerFicheros(rutaDiccionario)
-
-    tokens = tokenizacion(frase)
-    tokens = tratamientoBasico(tokens)
-    tokens = listaParada(tokens)
-    tokens = lematizacion(tokens)
-    #Creo una linea de ceros del tamaño del diccionario
-    linea = numpy.zeros(len(diccionario),dtype=int)
-    for token in tokens:
-        if(token in diccionario):
-            linea[diccionario.index(token)] +=1
-        else:
-            linea = numpy.append(linea,1)
-            diccionario.append(token)
-    return linea
     
 #Main
 #generarDiccionario()
@@ -210,4 +191,4 @@ def buscadorFrase(frase):
 #print( coseno(matriz[0], matriz[1]) )
 #matrizNueva = TransformTFIDF.matrixToTFIDF(matriz)
 #print(matrizNueva)
-print(len(buscadorFrase("")))
+#print(len(buscadorFrase("")))

@@ -82,7 +82,7 @@ class Buscador_por_texto_frame(Frame):
         if texto_buscado=="":
             self.label_error.place(relx=0, rely=0.7, relwidth=1) 
         else:      
-            noticias_similares = self.buscar(texto_buscado, top)
+            noticias_similares = teorema_coseno.texto_coseno(texto_buscado, top)
             self.controller.show_frame("Resultados_frame")
             self.controller.frames["Resultados_frame"].rellenar(noticias_similares, False)
             self.controller.frames["Resultados_frame"].set_origin("Buscador_por_texto_frame")
