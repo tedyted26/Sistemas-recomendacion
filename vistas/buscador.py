@@ -184,9 +184,11 @@ class Buscador_frame(Frame):
                 path+= "/Salud/"
         else:
             path+= "/"+ self.categorias_combobox.get() + "/"
-            
+
+
+
         files = os.listdir(path)
-        return path,files
+        return path, files
 
     def boton_buscar(self):
 
