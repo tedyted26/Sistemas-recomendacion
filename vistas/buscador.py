@@ -161,11 +161,11 @@ class Buscador_frame(Frame):
                 # el titulo se guarda con self para utilizarlo mas tarde
                 self.titulo_noticia = noticia.titulo
                 self.vista_noticias.insert('1.0', self.titulo_noticia)
-                self.vista_noticias.insert(END, "\n")
+                self.vista_noticias.insert(END, "\n\n")
                 self.vista_noticias.insert(END, noticia.subtitulo)
-                self.vista_noticias.insert(END, "\n")
+                self.vista_noticias.insert(END, "\n\n")
                 self.vista_noticias.insert(END, noticia.texto)
-                self.vista_noticias.insert(END, "\n")
+                self.vista_noticias.insert(END, "\n\n")
                 self.vista_noticias.insert(END, noticia.fecha)
 
                 self.vista_noticias.tag_add("bold", "1.0", "1.0 lineend")
