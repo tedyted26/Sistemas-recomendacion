@@ -48,26 +48,22 @@ def getIDFlistOfMatriz(matriz):
         lista.append(idf)
     return lista
 # Devuelve una lista externa a la matriz en TFIDF
-def listToTFIDF(m, extVector: list):
+def listToTFIDF(extVector: list, listaIDF: list):
     new_list = []  # Lista a devolver
-    matriz = m.copy()
+
     v = extVector.copy()
-    if len(matriz[0]) == len(v):
-        matriz.append(v)
-        n_words = sum(v)
-        for i, w in enumerate(v):
-            tf = w / n_words
+    lenlista = len(listaIDF)
+    lenv = len(v)
+    if lenv > lenlista:
+        v += [0 for i in range(lenv - lenlista)]
+    # if len(matriz[0]) == len(v):
+    n_words = sum(v)
+    for i, w in enumerate(v):
+        tf = w / n_words
 
-            w_in_docs_counter = 0
-            for row in matriz:
-                if row[i] > 0:
-                    w_in_docs_counter += 1
-
-            oper = len(matriz)/w_in_docs_counter
-
-            idf = math.log10(oper)
-            result = tf * idf
-            new_list.append(result)
+        idf = listaIDF[i]
+        result = tf * idf
+        new_list.append(result)
 
     return new_list
 

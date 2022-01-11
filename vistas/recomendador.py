@@ -47,7 +47,7 @@ class Recomendador(Tk):
         frame = self.frames[page_name]
         frame.tkraise() 
 
-#insertar menú en la ventana
+#crear la ventana
 app = Recomendador()
 
 #visualizar

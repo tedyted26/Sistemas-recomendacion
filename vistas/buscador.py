@@ -134,6 +134,7 @@ class Buscador_frame(Frame):
             rutaFichero = os.path.join(path, file)
             if os.path.isfile(rutaFichero):
                     noticia = tratamientoDatos.leerNoticia(rutaFichero)
+                    noticia.path = path
                     self.files_noticias.append(noticia)
                     self.lista_noticias.insert(i, str(i+1) + ". " + noticia.titulo)
                     i = i+1   
