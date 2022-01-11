@@ -55,7 +55,9 @@ def listToTFIDF(extVector: list, listaIDF: list):
     lenlista = len(listaIDF)
     lenv = len(v)
     if lenv > lenlista:
-        v += [0 for i in range(lenv - lenlista)]
+        oper = lenv - lenlista
+        lista0s = [0 for i in range(oper)]
+        listaIDF += lista0s
     # if len(matriz[0]) == len(v):
     n_words = sum(v)
     for i, w in enumerate(v):
