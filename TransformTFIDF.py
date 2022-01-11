@@ -1,4 +1,5 @@
 import math
+import os
 
 # LEER PARA USAR:
 import numpy
@@ -11,9 +12,14 @@ indexListToTFIDF: para transformar solo una fila de la matriz
 
 
 # Devuelve la matriz entera en TFIDF
-def matrixToTFIDF(matriz):
+def matrixToTFIDF(matriz, listaIDFopcional = None):
     new_m = []
-    listaIDF = getIDFlistOfMatriz(matriz)
+
+    if listaIDFopcional is not None:
+        listaIDF = listaIDFopcional
+    else:
+        listaIDF = getIDFlistOfMatriz(matriz)
+
     for i in range(len(matriz)):
         print("Posicion de lista operandose TFIDF:", i)
         new_m.append(indexListToTFIDF(matriz, i, listaIDF))

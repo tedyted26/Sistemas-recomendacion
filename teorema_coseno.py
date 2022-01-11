@@ -3,6 +3,7 @@ import numpy
 import tratamientoDatos as td
 import TransformTFIDF as tfidf
 import os
+from config.definitions import IDF_FILE_RPATH
 
 def texto_coseno(texto:str, top:int):
     '''
@@ -13,11 +14,18 @@ def texto_coseno(texto:str, top:int):
 
     # procesar matriz
     matriz_txt = numpy.loadtxt("matriz.txt")
-    matriz_tfidf = tfidf.matrixToTFIDF(matriz_txt)
+
+    IDFlist = None
+    if os.path.isfile(IDF_FILE_RPATH):
+        print("holi")
+        IDFlist = numpy.loadtxt(IDF_FILE_RPATH)
+
+    matriz_tfidf = tfidf.matrixToTFIDF(matriz_txt, IDFlist)
 
     # procesar texto y convertirlo a tf-idf
     texto_procesado = buscadorFrase(texto)
-    texto_tfidf = tfidf.listToTFIDF(texto_procesado, tfidf.getIDFlistOfMatriz(matriz_txt))
+
+    texto_tfidf = tfidf.listToTFIDF(texto_procesado, IDFlist)
 
     return documento_tfidf_origen_a_diccionario_con_resultados(texto_tfidf, matriz_tfidf, top)
 
@@ -36,7 +44,11 @@ def noticias_coseno(noticia:Noticia, top:int):
 
     # procesar matriz
     matriz_txt = numpy.loadtxt("matriz.txt")
-    matriz_tfidf = tfidf.matrixToTFIDF(matriz_txt)
+    IDFlist = None
+    if os.path.isfile(IDF_FILE_RPATH):
+        print("holi")
+        IDFlist = numpy.loadtxt(IDF_FILE_RPATH)
+    matriz_tfidf = tfidf.matrixToTFIDF(matriz_txt, IDFlist)
 
     # coger la noticia y comprobar en qué index está de la lista de ficheros leidos
     index_noticia=None
