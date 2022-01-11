@@ -123,7 +123,7 @@ def coseno(doc1, doc2):
     if lenDoc1 != lenDoc2:
         difLen = lenDoc1 - lenDoc2
         for i in range(difLen):
-            doc1 = numpy.append(doc1,0)
+            doc2 = numpy.append(doc2,0)
 
     numerador = 0
     cuadradosDoc1 = 0
