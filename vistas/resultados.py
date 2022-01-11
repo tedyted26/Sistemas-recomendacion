@@ -65,6 +65,9 @@ class Resultados_frame(Frame):
         self.label_ranking = Label(self.frame_contenido, text="Ranking")
         self.label_ranking.place(relx=0.05, rely= 0.11)
 
+        self.label_error = Label(self.frame_contenido, text="", fg="red")
+        self.label_error.place(relx=0.41, rely=0.055, relwidth=0.52)
+        
         self.label_previsualizacion = Label(self.frame_contenido, text="Previsualización")
         self.label_previsualizacion.place(relx=0.41, rely= 0.11)
 
@@ -99,6 +102,7 @@ class Resultados_frame(Frame):
         self.controller.show_frame(self.origin)
     
     def rellenar(self, noticias_similares, filtros=False, noticia_origen = None):
+        self.label_error.config(text = "")
 
         self.noticias_similares = noticias_similares # diccionario
         self.noticia_origen = noticia_origen
@@ -151,11 +155,11 @@ class Resultados_frame(Frame):
                     
                 # rellenamos vista
                 self.vista_noticias.insert('1.0', noticia_seleccionada.titulo)
-                self.vista_noticias.insert(END, "\n")
+                self.vista_noticias.insert(END, "\n\n")
                 self.vista_noticias.insert(END, noticia_seleccionada.subtitulo)
-                self.vista_noticias.insert(END, "\n")
+                self.vista_noticias.insert(END, "\n\n")
                 self.vista_noticias.insert(END, noticia_seleccionada.texto)
-                self.vista_noticias.insert(END, "\n")
+                self.vista_noticias.insert(END, "\n\n")
                 self.vista_noticias.insert(END, noticia_seleccionada.fecha)
 
                 self.vista_noticias.tag_add("bold", "1.0", "1.0 lineend")
@@ -175,6 +179,10 @@ class Resultados_frame(Frame):
         self.lista_noticias.focus(None)
         
         periodico_seleccionado = self.periodicos_combobox.get()
+
+        if self.noticias_similares is None or len(self.noticias_similares)==0:
+            self.label_error.config(text = "Lo sentimos, no se han encontrado coincidencias.")
+            return
 
         i = 0
         for key in self.noticias_similares:            

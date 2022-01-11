@@ -20,8 +20,8 @@ def sorensen_dice(noticia:Noticia, top:int):
             noticias = os.listdir(rutaTema)
             #Recorro todas las noticias de cada tema
             for nombre_noticia in noticias:
-                ruta_noticia2 = rutaTema + nombre_noticia
-                noticia2 = leerNoticia(ruta_noticia2)
+                ruta_noticia2 = periodico + tema + "/" + nombre_noticia
+                noticia2 = leerNoticia(os.getcwd() + ruta_noticia2)
                 if noticia.url != noticia2.url and len(noticia2.tags) != 0:
                     #Algoritmo
                     tags_en_comun = [value for value in noticia.tags if value in noticia2.tags]

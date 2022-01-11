@@ -1,8 +1,8 @@
 from tkinter import *
-from menu import Menu_frame
-from buscador_texto import Buscador_por_texto_frame
-from buscador import Buscador_frame
-from resultados import Resultados_frame
+from vistas.menu import Menu_frame
+from vistas.buscador_texto import Buscador_por_texto_frame
+from vistas.buscador import Buscador_frame
+from vistas.resultados import Resultados_frame
 
 class Recomendador(Tk):
     def __init__(self, *args, **kwargs):
@@ -47,13 +47,3 @@ class Recomendador(Tk):
         frame = self.frames[page_name]
         frame.tkraise()
 
-import os
-from config.definitions import ROOT_DIR
-os.chdir(ROOT_DIR)
-currentD = os.getcwd()
-print(currentD)
-#crear la ventana
-app = Recomendador()
-
-#visualizar
-app.mainloop()
