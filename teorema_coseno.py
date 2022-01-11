@@ -102,9 +102,8 @@ def documento_tfidf_origen_a_diccionario_con_resultados(doc_o_texto_origen_tfidf
             # Guardar noticia y la similitud en el diccionario sólo si el resultado es diferente de 1 (si es 1 significa que son el mismo vector o noticia)
             if resultado != 1:
                 lista_ratings[ruta_noticia] = round(resultado * 100, 2) # para que quede bonito
-
         except:
-            print()
+            print("Error con coseno")
 
         index_fila_matriz +=1
         
@@ -147,7 +146,11 @@ def coseno(doc1, doc2):
     raizDoc1 = cuadradosDoc1**(0.5)
     raizDoc2 = cuadradosDoc2**(0.5)
     denominador = raizDoc1 * raizDoc2
-    return numerador/denominador
+    result = 0
+    if numerador != 0:
+        result = numerador/denominador
+
+    return result
 
 '''
 Tratamiento básico de la frase para luego pasarla a tf-idf en el método principal del coseno
