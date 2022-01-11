@@ -4,13 +4,14 @@ import tratamientoDatos as td
 import TransformTFIDF as tfidf
 import os
 
-'''
-Metodo principal que calcula las similitudes entre un string y las noticias del conjunto
-Devuelve un diccionario de claves-valor donde la clave es la ruta del archivo y el valor el porcentaje de similitud
-Los resultados están ordenados de mayor a menor según el valor del porcentaje
-'''
 def texto_coseno(texto:str, top:int):
+    '''
+    Metodo principal que calcula las similitudes entre un string y las noticias del conjunto
+    Devuelve un diccionario de claves-valor donde la clave es la ruta del archivo y el valor el porcentaje de similitud
+    Los resultados están ordenados de mayor a menor según el valor del porcentaje
+    '''
 
+    # procesar matriz
     matriz_txt = numpy.loadtxt("matriz.txt")
     matriz_tfidf = tfidf.matrixToTFIDF(matriz_txt)
 
@@ -20,20 +21,20 @@ def texto_coseno(texto:str, top:int):
 
     return documento_tfidf_origen_a_diccionario_con_resultados(texto_tfidf, matriz_tfidf, top)
 
-    
 
-'''
-Metodo principal que calcula las similitudes entre una noticia dada y las demás noticias del conjunto
-Devuelve un diccionario de claves-valor donde la clave es la ruta del archivo y el valor el porcentaje de similitud
-Los resultados están ordenados de mayor a menor según el valor del porcentaje
-'''
 def noticias_coseno(noticia:Noticia, top:int):
+    '''
+    Metodo principal que calcula las similitudes entre una noticia dada y las demás noticias del conjunto
+    Devuelve un diccionario de claves-valor donde la clave es la ruta del archivo y el valor el porcentaje de similitud
+    Los resultados están ordenados de mayor a menor según el valor del porcentaje
+    '''
     if noticia.path == None:
         print("Fichero de noticia sin ruta especificada")
         return
 
     ruta_os = os.getcwd()
 
+    # procesar matriz
     matriz_txt = numpy.loadtxt("matriz.txt")
     matriz_tfidf = tfidf.matrixToTFIDF(matriz_txt)
 
@@ -68,7 +69,8 @@ def noticias_coseno(noticia:Noticia, top:int):
     return documento_tfidf_origen_a_diccionario_con_resultados(doc1, matriz_tfidf, top)
     
 
-'''
+def documento_tfidf_origen_a_diccionario_con_resultados(doc_o_texto_origen_tfidf:list, matriz_tfidf, top:int):
+    '''
     El propósito de esto es rellenar el diccionario de resultados con una pareja de clave-valor pasando
     un documento o texto de origen, que es una lista de valores tfidf, la matriz en tfidf y el top resultados
     Se hace el teorema del coseno con la lista de valores y la matriz, y se devuelve un diccionario de resultados
@@ -76,7 +78,7 @@ def noticias_coseno(noticia:Noticia, top:int):
     con el número de fila de un archivo que contiene los nombres de las filas de la matriz en orden (ficherosLeidos)
     El valor es el resultado del teorema del coseno en porcentajes
     '''
-def documento_tfidf_origen_a_diccionario_con_resultados(doc_o_texto_origen_tfidf:list, matriz_tfidf, top:int):
+
     lista_ratings = {} # diccionario donde vamos a guardar la ruta de la noticia y su rating como parejas de clave valor
 
     # hacer el teorema del coseno con el texto para cada documento de la matriz
@@ -100,7 +102,7 @@ def documento_tfidf_origen_a_diccionario_con_resultados(doc_o_texto_origen_tfidf
         try:
             resultado = coseno(doc_o_texto_origen_tfidf, doc)
             # Guardar noticia y la similitud en el diccionario sólo si el resultado es diferente de 1 (si es 1 significa que son el mismo vector o noticia)
-            if resultado != 1:
+            if resultado != 1 and resultado != 0:
                 lista_ratings[ruta_noticia] = round(resultado * 100, 2) # para que quede bonito
         except:
             print("Error con coseno")
@@ -122,11 +124,13 @@ def documento_tfidf_origen_a_diccionario_con_resultados(doc_o_texto_origen_tfidf
 
     return lista_ratings
 
-'''
-Cálculos del teorema del coseno
-'''
+
 #Metodo para calcular la similitud en función del coseno
 def coseno(doc1, doc2):
+    '''
+    Cálculos del teorema del coseno
+    '''
+
     lenDoc1 = len(doc1)
     lenDoc2 = len(doc2)
     #Comprobamos que ambas listas son del mismo tamaño
@@ -152,10 +156,11 @@ def coseno(doc1, doc2):
 
     return result
 
-'''
-Tratamiento básico de la frase para luego pasarla a tf-idf en el método principal del coseno
-'''
+
 def buscadorFrase(frase):
+    '''
+    Tratamiento básico de la frase para luego pasarla a tf-idf en el método principal del coseno
+    '''
     #leo el diccionario
     diccionario = td.leerFicheros("diccionario.txt")
 
