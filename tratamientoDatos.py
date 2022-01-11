@@ -106,7 +106,7 @@ def generarDiccionario():
                 noticiaActual = periodico + tema + "/" + noticia
                 if noticiaActual not in ficherosTratados:
                     #Tratamiento de la noticia
-                    tokens = tokenizacion(rutaTema+noticia)
+                    tokens = tokenizacion(leerFichero(rutaTema+noticia))
                     tokens = tratamientoBasico(tokens)
                     tokens = listaParada(tokens)
                     tokens = lematizacion(tokens)
