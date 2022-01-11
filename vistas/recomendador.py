@@ -45,8 +45,13 @@ class Recomendador(Tk):
     #mostrar las paginas
     def show_frame(self, page_name):
         frame = self.frames[page_name]
-        frame.tkraise() 
+        frame.tkraise()
 
+import os
+from config.definitions import ROOT_DIR
+os.chdir(ROOT_DIR)
+currentD = os.getcwd()
+print(currentD)
 #crear la ventana
 app = Recomendador()
 
