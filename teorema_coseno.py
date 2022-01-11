@@ -28,7 +28,7 @@ Devuelve un diccionario de claves-valor donde la clave es la ruta del archivo y 
 Los resultados están ordenados de mayor a menor según el valor del porcentaje
 '''
 def noticias_coseno(noticia:Noticia, top:int):
-    if noticia.path != None:
+    if noticia.path == None:
         print("Fichero de noticia sin ruta especificada")
         return
 
@@ -42,6 +42,7 @@ def noticias_coseno(noticia:Noticia, top:int):
     with open("ficherosLeidos.txt") as f:
         index_fila_leidos = 0
         for fila in f:
+            fila = fila.replace("\n", "")
             if os.path.join(ruta_os, noticia.path) == os.path.join(ruta_os, fila):
                 index_noticia = index_fila_leidos
                 break
@@ -89,7 +90,7 @@ def documento_tfidf_origen_a_diccionario_con_resultados(doc_o_texto_origen_tfidf
             index_fila_leidos = 0
             for fila in f:
                 if index_fila_matriz == index_fila_leidos:
-                    ruta_noticia = os.path.join(ruta_os, fila)
+                    ruta_noticia = fila
                     ruta_noticia = ruta_noticia.replace("\n","")
                     break
                 else:
