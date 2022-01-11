@@ -147,7 +147,7 @@ class Resultados_frame(Frame):
                 #noticia_seleccionada = self.noticias_similares[index_noticia]
                 path_noticia_seleccionada = list(self.noticias_similares)[index_noticia]
 
-                noticia_seleccionada = tratamientoDatos.leerNoticia(path_noticia_seleccionada)
+                noticia_seleccionada = tratamientoDatos.leerNoticia(os.getcwd() + path_noticia_seleccionada)
                     
                 # rellenamos vista
                 self.vista_noticias.insert('1.0', noticia_seleccionada.titulo)
@@ -179,7 +179,7 @@ class Resultados_frame(Frame):
         i = 0
         for key in self.noticias_similares:            
             key = key.replace("\n", "")
-            noticia = tratamientoDatos.leerNoticia(key)
+            noticia = tratamientoDatos.leerNoticia(os.getcwd() + key)
             ranking = self.noticias_similares[key]
 
             if periodico_seleccionado=="Todos":
