@@ -177,7 +177,8 @@ class Resultados_frame(Frame):
         periodico_seleccionado = self.periodicos_combobox.get()
 
         i = 0
-        for key in self.noticias_similares:
+        for key in self.noticias_similares:            
+            key = key.replace("\n", "")
             noticia = tratamientoDatos.leerNoticia(key)
             ranking = self.noticias_similares[key]
 

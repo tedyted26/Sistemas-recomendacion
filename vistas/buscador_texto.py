@@ -52,19 +52,12 @@ class Buscador_por_texto_frame(Frame):
         periodicos = ["El Mundo", "El País", "20 Minutos"]
         top = [3, 5, 10]
 
-        self.label_periodicos = Label(self.frame_buscador, text="Periódico:")
-        self.label_periodicos.place(relx=0.3, rely=0.5)
-
-        self.periodicos_combobox = ttk.Combobox(self.frame_buscador, values=periodicos, state="readonly")
-        self.periodicos_combobox.current(0)
-        self.periodicos_combobox.place(relx=0.37, rely= 0.5, relwidth=0.2)
-
         self.label_top = Label(self.frame_buscador, text="Top:")
-        self.label_top.place(relx=0.61, rely=0.5)
+        self.label_top.place(relx=0.45, rely=0.5)
 
         self.top_combobox = ttk.Combobox(self.frame_buscador, values=top, state="readonly")
         self.top_combobox.current(0)
-        self.top_combobox.place(relx=0.65, rely= 0.5, relwidth=0.05)
+        self.top_combobox.place(relx=0.5, rely= 0.5, relwidth=0.05)
 
         self.boton_buscar = Button(self.frame_buscador, text="Buscar", command=self.boton_buscar)
         self.boton_buscar.place(relx=0.45, rely=0.6, relwidth=0.1)
@@ -82,7 +75,7 @@ class Buscador_por_texto_frame(Frame):
         if texto_buscado=="":
             self.label_error.place(relx=0, rely=0.7, relwidth=1) 
         else:      
-            noticias_similares = teorema_coseno.texto_coseno(texto_buscado, top)
+            noticias_similares = teorema_coseno.texto_coseno(texto_buscado, int(top))
             self.controller.show_frame("Resultados_frame")
             self.controller.frames["Resultados_frame"].rellenar(noticias_similares, False)
             self.controller.frames["Resultados_frame"].set_origin("Buscador_por_texto_frame")

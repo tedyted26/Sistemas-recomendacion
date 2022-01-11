@@ -10,6 +10,7 @@ class Noticia:
         self.periodico = periodico
         self.tags = tags
         self.texto = texto
+        self.path = None
 
     def getStringTags(self):
         string = ""

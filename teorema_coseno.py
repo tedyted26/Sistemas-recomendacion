@@ -2,6 +2,7 @@ from Noticia import Noticia
 import numpy
 import tratamientoDatos as td
 import TransformTFIDF as tfidf
+import os
 
 '''
 Metodo principal que calcula las similitudes entre un string y las noticias del conjunto
@@ -10,13 +11,12 @@ Los resultados están ordenados de mayor a menor según el valor del porcentaje
 '''
 def texto_coseno(texto:str, top:int):
 
-    # leer matriz y convertirla a tf-idf FIXME
     matriz_txt = numpy.loadtxt("matriz.txt")
-    matriz_tfidf = tfidf.matrixToTFIDF(matriz_txt) 
+    matriz_tfidf = tfidf.matrixToTFIDF(matriz_txt)
 
     # procesar texto y convertirlo a tf-idf
     texto_procesado = buscadorFrase(texto)
-    texto_tfidf = tfidf.listToTFIDF(matriz_tfidf, texto_procesado)
+    texto_tfidf = tfidf.listToTFIDF(texto_procesado, tfidf.getIDFlistOfMatriz(matriz_txt))
 
     return documento_tfidf_origen_a_diccionario_con_resultados(texto_tfidf, matriz_tfidf, top)
 
@@ -28,8 +28,12 @@ Devuelve un diccionario de claves-valor donde la clave es la ruta del archivo y 
 Los resultados están ordenados de mayor a menor según el valor del porcentaje
 '''
 def noticias_coseno(noticia:Noticia, top:int):
+    if noticia.path != None:
+        print("Fichero de noticia sin ruta especificada")
+        return
 
-    # FIXME coger matriz en tf-idf
+    ruta_os = os.getcwd()
+
     matriz_txt = numpy.loadtxt("matriz.txt")
     matriz_tfidf = tfidf.matrixToTFIDF(matriz_txt)
 
@@ -38,7 +42,7 @@ def noticias_coseno(noticia:Noticia, top:int):
     with open("ficherosLeidos.txt") as f:
         index_fila_leidos = 0
         for fila in f:
-            if noticia.url == fila:
+            if os.path.join(ruta_os, noticia.path) == os.path.join(ruta_os, fila):
                 index_noticia = index_fila_leidos
                 break
             else:
@@ -76,6 +80,7 @@ def documento_tfidf_origen_a_diccionario_con_resultados(doc_o_texto_origen_tfidf
 
     # hacer el teorema del coseno con el texto para cada documento de la matriz
     index_fila_matriz = 0
+    ruta_os = os.getcwd()
     for doc in matriz_tfidf:
         ruta_noticia = ""
 
@@ -84,19 +89,26 @@ def documento_tfidf_origen_a_diccionario_con_resultados(doc_o_texto_origen_tfidf
             index_fila_leidos = 0
             for fila in f:
                 if index_fila_matriz == index_fila_leidos:
-                    ruta_noticia = fila
+                    ruta_noticia = os.path.join(ruta_os, fila)
+                    ruta_noticia = ruta_noticia.replace("\n","")
                     break
                 else:
-                    index_fila_leidos =+1
+                    index_fila_leidos +=1
         
         # teorema del coseno
-        resultado = coseno(doc_o_texto_origen_tfidf, doc)
+        try:
+            resultado = coseno(doc_o_texto_origen_tfidf, doc)
+            # Guardar noticia y la similitud en el diccionario sólo si el resultado es diferente de 1 (si es 1 significa que son el mismo vector o noticia)
+            if resultado != 1:
+                lista_ratings[ruta_noticia] = round(resultado * 100, 2) # para que quede bonito
+            else:
+                return
 
-        # Guardar noticia y la similitud en el diccionario sólo si el resultado es diferente de 1 (si es 1 significa que son el mismo vector o noticia)
-        if resultado != 1:
-            lista_ratings[ruta_noticia] = round(resultado * 100, 2) # para que quede bonito
-        else:
-            return
+        except:
+            print()
+
+        index_fila_matriz +=1
+        
 
     # Ordeno el diccionario por el valor del rating
     lista = sorted(lista_ratings.items(), key=lambda x: x[1], reverse=True)
