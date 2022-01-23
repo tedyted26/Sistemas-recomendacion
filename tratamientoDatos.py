@@ -18,6 +18,8 @@ rutaDiccionario = "diccionario.txt"
 rutaFicherosTratados = "ficherosLeidos.txt"
 rutaMatriz = "matriz.txt"
 
+nlp = spacy.load('es_core_news_sm')
+
 #Metodo de lectura de noticia
 def leerNoticia(rutaFichero):
     print(rutaFichero)
@@ -43,9 +45,7 @@ def leerFicheros(rutaFichero):
 
 
 #Metodos de Tratamiento de ficheros
-def tokenizacion(texto):
-    nlp = spacy.load('es_core_news_sm')
-    
+def tokenizacion(texto):  
     doc = nlp(texto) # Crea un objeto de spacy tipo nlp
     tokens = [t.orth_ for t in doc] # Crea una lista con las palabras del texto
     return tokens
@@ -75,7 +75,6 @@ def listaParada(tokens):
     return listaDepurada
 
 def lematizacion(tokens):
-    nlp = spacy.load('es_core_news_sm')
     texto = ""
     for token in tokens:
         texto += token + " "
